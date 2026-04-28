@@ -1,0 +1,126 @@
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: 4px;
+}
+
+.section {}
+
+.sectionTitle {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+.filterList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.catName {
+  flex: 1;
+  text-align: left;
+}
+
+.catCount {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--bg-card);
+  padding: 1px 6px;
+  border-radius: 8px;
+  min-width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.filterBtn:hover {
+  color: var(--text);
+  background: var(--bg-card);
+}
+
+.filterBtn.active {
+  color: var(--accent);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.filterBtn.active .catCount {
+  color: var(--accent);
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.filterDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.resetBtn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--red);
+  background: rgba(239, 68, 68, 0.07);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.resetBtn:hover {
+  background: rgba(239, 68, 68, 0.14);
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+}
+
+
+
+
+.sectionSubTitle {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.sectionsmallText {
+  font-size: 12px;
+  color: var(--text-dim);
+
+}
+
+.sectionsmallItem {
+  padding: 5px;
+}
+
+.sectionsmallItem:hover {
+  color: var(--text);
+  background: var(--bg-card);
+}

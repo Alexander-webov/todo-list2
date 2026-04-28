@@ -1,0 +1,60 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  border-radius: 100px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.md {
+  font-size: 11px;
+  padding: 3px 9px;
+}
+
+.sm {
+  font-size: 10px;
+  padding: 2px 7px;
+}
+
+.label {
+  font-weight: 700;
+}
+
+.sub {
+  font-weight: 500;
+  opacity: 0.75;
+  margin-left: 2px;
+}
+
+/* "Горячий" — лёгкое свечение */
+.hot {
+  box-shadow: 0 0 10px currentColor;
+  filter: brightness(1.05);
+}
+
+/* Самые горячие — мягкая пульсация */
+.pulse {
+  animation: competitionPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes competitionPulse {
+  0%, 100% {
+    box-shadow: 0 0 8px currentColor;
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 16px currentColor, 0 0 24px currentColor;
+    transform: scale(1.035);
+  }
+}
+
+/* Если пользователь не хочет анимации */
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
+}

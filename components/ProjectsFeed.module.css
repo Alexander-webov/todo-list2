@@ -1,0 +1,198 @@
+.feed {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.regionTabs {
+  display: flex;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px;
+}
+
+.regionTab {
+  flex: 1;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.regionTab:hover {
+  color: var(--text);
+  background: var(--border);
+}
+
+.regionTabActive {
+  color: #fff;
+  background: var(--accent);
+}
+
+.regionTabActive:hover {
+  background: var(--accent-hover);
+  color: #fff;
+}
+
+.newBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: var(--accent-hover);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: center;
+  justify-content: center;
+  transition: background 0.15s;
+  animation: fadeSlideUp 0.3s ease both;
+}
+
+.newBadge:hover {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.newDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-dot 1.5s ease infinite;
+  flex-shrink: 0;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0;
+  min-height: 80px;
+}
+
+.spinner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.spinnerDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-dot 0.9s ease infinite;
+}
+
+.endMsg {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+}
+
+/* Registration gate for guests */
+.registerGate {
+  position: relative;
+  margin-top: -60px;
+  padding-top: 60px;
+}
+
+.registerGateBlur {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent, var(--bg) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.registerGateBox {
+  position: relative;
+  z-index: 2;
+  background: var(--bg-card);
+  border: 1px solid var(--border-bright);
+  border-radius: 16px;
+  padding: 28px 32px 32px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(59,130,246,0.08);
+}
+
+.registerGateIcon { font-size: 32px; display: block; margin-bottom: 12px; }
+
+.registerGateTitle {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  margin-bottom: 10px;
+}
+
+.registerGateSub {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+.registerGatePerks {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.registerGatePerks span {
+  font-size: 13px;
+  color: var(--green);
+  font-weight: 600;
+}
+
+.registerGateBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.registerGatePrimary {
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.registerGatePrimary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.registerGateSecondary {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.registerGateSecondary:hover { color: var(--text-muted); }

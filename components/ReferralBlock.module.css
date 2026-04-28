@@ -1,0 +1,24 @@
+.block { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; }
+
+.title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-dim); margin-bottom: 14px; }
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.stat { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
+.statNum { font-size: 24px; font-weight: 800; color: #a78bfa; font-family: var(--font-mono); }
+.statLabel { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+.desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+
+.linkBox { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 12px; }
+.link { font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.copyBtn { font-size: 16px; background: none; border: none; cursor: pointer; color: var(--accent); flex-shrink: 0; padding: 2px 6px; }
+
+.applyForm { display: flex; gap: 8px; margin-bottom: 8px; }
+.input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 13px; padding: 9px 12px; outline: none; }
+.input:focus { border-color: var(--accent); }
+.applyBtn { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--text); background: var(--border); border: 1px solid var(--border-bright); border-radius: var(--radius-sm); padding: 9px 14px; cursor: pointer; white-space: nowrap; }
+.applyBtn:hover { background: var(--bg-card-hover); }
+
+.result { font-size: 13px; padding: 8px 12px; border-radius: var(--radius-sm); }
+.ok { color: var(--green); background: rgba(34,197,94,0.08); }
+.err { color: var(--red); background: rgba(239,68,68,0.08); }

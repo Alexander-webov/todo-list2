@@ -1,0 +1,81 @@
+.bar {
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-card) 60%, transparent);
+}
+
+.inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  overflow-x: auto;
+}
+
+.totalBlock {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.totalNum {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.totalLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.sources {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+.sourceItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sourceName {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.sourceCount {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--border);
+  padding: 1px 7px;
+  border-radius: 100px;
+}
+
+@media (max-width: 600px) {
+  .inner { gap: 12px; }
+  .sourceName { display: none; }
+}

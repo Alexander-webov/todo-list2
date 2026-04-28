@@ -1,0 +1,23 @@
+/* Добавь в globals.css или подключи здесь */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+  width: 100%;
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+}
+
+@media (max-width: 900px) {
+  .main-layout {
+    padding: 16px 16px 48px;
+    gap: 0;
+  }
+}

@@ -1,0 +1,271 @@
+.page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 24px 64px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.back {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--text);
+}
+
+.logoutBtn {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--border);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.logoutBtn:hover {
+  color: var(--text);
+}
+
+.successBanner {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: var(--green);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.section {
+  margin-bottom: 28px;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.rowLabel {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.rowValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.premium {
+  color: #a78bfa !important;
+}
+
+.free {
+  color: var(--text-dim) !important;
+}
+
+.upgradeBtn {
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  text-decoration: none;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.upgradeBtn:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.paymentRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.paymentRow:last-child {
+  border-bottom: none;
+}
+
+.paymentName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.paymentDate {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.paymentRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.paymentAmount {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+.paymentStatus {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.statusOk {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--green);
+}
+
+.statusPending {
+  background: var(--border);
+  color: var(--text-dim);
+}
+
+.tgDesc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.tgSteps {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding-left: 18px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  line-height: 1.6;
+}
+
+.tgLink {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tgLink:hover {
+  text-decoration: underline;
+}
+
+.tgForm {
+  display: flex;
+  gap: 8px;
+}
+
+.tgInput {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.tgInput:focus {
+  border-color: var(--accent);
+}
+
+.tgInput::placeholder {
+  color: var(--text-dim);
+}
+
+.tgBtn {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 9px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.tgBtn:hover {
+  background: var(--accent-hover);
+}
+
+.tgBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tgResult {
+  font-size: 13px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.tgOk {
+  color: var(--green);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.tgErr {
+  color: var(--red);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.textLinkBot {
+  color: var(--accent);
+}

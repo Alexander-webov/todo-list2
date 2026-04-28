@@ -1,0 +1,26 @@
+.page { max-width: 800px; margin: 0 auto; padding: 24px 24px 64px; }
+.back { font-size: 13px; color: var(--text-muted); text-decoration: none; display: inline-block; margin-bottom: 28px; }
+.back:hover { color: var(--text); }
+
+.hero { text-align: center; margin-bottom: 36px; }
+.title { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; margin-bottom: 10px; }
+.sub { font-size: 15px; color: var(--text-muted); line-height: 1.6; max-width: 500px; margin: 0 auto; }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 32px; }
+
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.cardHeader { display: flex; align-items: center; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.name { font-size: 15px; font-weight: 700; color: var(--text); }
+.desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+.commission { font-size: 12px; color: var(--green); font-weight: 600; }
+.btn { display: block; text-align: center; font-size: 13px; font-weight: 700; color: #fff; border-radius: var(--radius-sm); padding: 11px; text-decoration: none; opacity: 0.95; transition: opacity 0.15s; margin-top: auto; }
+.btn:hover { opacity: 1; }
+
+.promo { background: var(--bg-card); border: 1px solid var(--border-bright); border-radius: var(--radius); padding: 28px; text-align: center; }
+.promo h2 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.promo p { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; }
+.promoBtn { display: inline-block; font-size: 14px; font-weight: 700; color: #fff; background: var(--accent); border-radius: var(--radius-sm); padding: 12px 24px; text-decoration: none; }
+.promoBtn:hover { background: var(--accent-hover); }
+
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
