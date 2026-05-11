@@ -6,6 +6,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { calcMatch, getMatchLabel } from '@/lib/match';
 import { trackApplication } from './ApplicationMotivator';
+import { GoToProjectButton } from './GoToProjectButton';
 
 const SOURCE_META = {
   fl: { name: 'FL.ru', color: '#ff6600', flag: '🇷🇺' },
@@ -48,6 +49,7 @@ export function ProjectCard({ project, profile, style }) {
   const [copied, setCopied] = useState(false);
   const [sending, setSending] = useState(false);
   const [sendDone, setSendDone] = useState(false);
+  const [cooldownUntil, setCooldownUntil] = useState(0);
 
   const meta = SOURCE_META[project.source] || { name: project.source, color: '#6b7a99', flag: '🌐' };
   const budget = formatBudget(project.budget_min, project.budget_max, project.currency);
@@ -64,26 +66,54 @@ export function ProjectCard({ project, profile, style }) {
   const fresh = isFreshProject(dateForFresh);
 
   async function generateResponse() {
+    const now = Date.now();
+
+    if (cooldownUntil > now) {
+      const seconds = Math.ceil((cooldownUntil - now) / 1000);
+      setModal(true);
+      setResponse(`Лимит AI. Попробуй ещё раз через ${seconds} секунд. Можно откликнуться вручную кнопкой ниже.`);
+      return;
+    }
+
     setModal(true);
     setSendDone(false);
-    if (response) return;
+    if (response && !response.startsWith('Лимит AI') && !response.startsWith('AI сервис')) return;
+
     setLoading(true);
+    setResponse('');
+
     try {
       const res = await fetch('/api/generate-response', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: project.title, description: project.description, source: project.source, budget }),
       });
-      const data = await res.json();
+
+      const data = await res.json().catch(() => ({}));
+
       if (res.status === 402 || data.premium_required) {
         setModal(false);
         setLoading(false);
         window.location.href = '/pricing?from=ai';
         return;
       }
-      setResponse(data.text || data.error || 'Ошибка генерации');
+
+      if (res.status === 429 || data.code === 'AI_RATE_LIMIT') {
+        const retryAfter = Math.min(Number(data.retryAfter || res.headers.get('retry-after') || 20), 90);
+        setCooldownUntil(Date.now() + retryAfter * 1000);
+        setResponse(data.error || `Лимит AI. Попробуй ещё раз через ${retryAfter} секунд. Можно откликнуться вручную кнопкой ниже.`);
+        return;
+      }
+
+      if (!res.ok) {
+        setResponse(data.error || 'AI сервис временно недоступен. Можно откликнуться на проект вручную.');
+        return;
+      }
+
+      setResponse(data.text || 'AI вернул пустой ответ. Попробуй ещё раз.');
+      setCooldownUntil(Date.now() + 4000);
     } catch {
-      setResponse('Ошибка соединения');
+      setResponse('Ошибка соединения с AI. Можно откликнуться на проект вручную.');
     } finally {
       setLoading(false);
     }
@@ -97,7 +127,7 @@ export function ProjectCard({ project, profile, style }) {
 
   async function sendResponse() {
     setSending(true);
-    try { await navigator.clipboard.writeText(response); } catch (_) {}
+    try { await navigator.clipboard.writeText(response); } catch (_) { }
     trackApplication(project.id, true);
     setSendDone(true);
     setSending(false);
@@ -182,21 +212,32 @@ export function ProjectCard({ project, profile, style }) {
             )}
           </div>
 
-          {isPremium ? (
-            <button className={styles.aiBtn} onClick={handleAiClick}>
-              <span className={styles.aiIcon}>✦</span>
-              <span>Откликнуться с AI</span>
-            </button>
-          ) : (
-            <a
-              className={styles.aiBtn}
-              href="/pricing?from=ai"
-              title="AI-отклики доступны в премиум-подписке"
+          <div className={styles.actions}>
+            <GoToProjectButton
+              projectId={project.id}
+              url={url}
+              source={meta.name}
+              className={styles.manualBtn}
             >
-              <span className={styles.aiIcon}>🔒</span>
-              <span>Откликнуться с AI</span>
-            </a>
-          )}
+              Откликнуться →
+            </GoToProjectButton>
+
+            {isPremium ? (
+              <button className={styles.aiBtn} onClick={handleAiClick}>
+                <span className={styles.aiIcon}>✦</span>
+                <span>AI-отклик</span>
+              </button>
+            ) : (
+              <a
+                className={styles.aiBtn}
+                href="/pricing?from=ai"
+                title="AI-отклики доступны в премиум-подписке"
+              >
+                <span className={styles.aiIcon}>🔒</span>
+                <span>AI-отклик</span>
+              </a>
+            )}
+          </div>
         </div>
       </article>
 
@@ -234,12 +275,20 @@ export function ProjectCard({ project, profile, style }) {
                   <button className={styles.copyBtn} onClick={copyText}>
                     {copied ? '✓ Скопировано' : '⎘ Копировать'}
                   </button>
+                  <GoToProjectButton
+                    projectId={project.id}
+                    url={url}
+                    source={meta.name}
+                    className={styles.manualModalBtn}
+                  >
+                    Открыть проект →
+                  </GoToProjectButton>
                   <button
                     className={`${styles.sendBtn} ${sendDone ? styles.sendBtnDone : ''}`}
                     onClick={sendResponse}
                     disabled={sending || sendDone}
                   >
-                    {sendDone ? '✓ Скопировано! Открываю...' : sending ? '...' : `Откликнуться на ${meta.name} →`}
+                    {sendDone ? '✓ Скопировано! Открываю...' : sending ? '...' : `Скопировать и открыть ${meta.name} →`}
                   </button>
                 </div>
               </div>
