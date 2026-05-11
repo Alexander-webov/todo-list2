@@ -1,12 +1,19 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import styles from './Header.module.css';
 import { ThemeToggle } from './ThemeToggle';
 
-
+const NAV_ITEMS = [
+  { href: '/', label: 'Проекты' },
+  { href: '/partners', label: 'Все биржи' },
+  { href: '/blog', label: 'Блог' },
+  { href: '/faq', label: 'FAQ' },
+];
 
 export function HeaderClient({ user, isAdmin }) {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -24,35 +31,63 @@ export function HeaderClient({ user, isAdmin }) {
     window.location.href = '/';
   }
 
+  const username = user?.email?.split('@')[0] || '';
+
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.inner}>
-        <a href="/" className={styles.logo}>
-          <span className={styles.logoIcon}>⚡</span>
-          <span className={styles.logoText}>Freelance<span className={styles.logoAccent}>Here</span></span>
-        </a>
-        <div className={styles.liveBadge}>
-          <span className={styles.liveDot} /><span>Live</span>
+        <div className={styles.leftGroup}>
+          <a href="/" className={styles.logo} aria-label="AllFreelancersHere">
+            <span className={styles.logoIcon}>⚡</span>
+            <span className={styles.logoText}>
+              <span className={styles.logoAll}>All</span>
+              <span className={styles.logoFreelancers}>Freelancers</span>
+              <span className={styles.logoHere}>Here</span>
+            </span>
+          </a>
+          {/*           <div className={styles.themeWrap}>
+            <ThemeToggle />
+          </div> */}
         </div>
+
         <nav className={styles.nav}>
-          <a href="/" className={styles.navLink}>Проекты</a>
-          <a href="/partners" className={styles.navLink}>Биржи</a>
-          <a href="/blog" className={styles.navLink}>Блог</a>
-          <a href="/faq" className={styles.navLink}>FAQ</a>
-          {isAdmin && <a href="/admin" className={styles.navLink}>Админ</a>}
-          <ThemeToggle />
+          {NAV_ITEMS.map((item) => {
+            const isActive = item.href === '/'
+              ? pathname === '/'
+              : pathname?.startsWith(item.href);
+
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                className={`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}
+              >
+                {item.label}
+              </a>
+            );
+          })}
+          {isAdmin && (
+            <a
+              href="/admin"
+              className={`${styles.navLink} ${pathname?.startsWith('/admin') ? styles.navLinkActive : ''}`}
+            >
+              Админ
+            </a>
+          )}
+
         </nav>
+
         <div className={styles.actions}>
           {user ? (
             <>
-              <a href="/settings" className={styles.navLink} title="Настройка совпадений">🎯Настройка</a>
-              <a href="/dashboard" className={styles.btnOutline}>{user.email.split('@')[0]}</a>
+              <a href="/settings" className={styles.settingsLink}>🎯 Настройка</a>
+              <a href="/dashboard" className={styles.btnGhost}>{username}</a>
               <button className={styles.btnOutline} onClick={logout}>Выйти</button>
             </>
           ) : (
             <>
-              <a href="/login" className={styles.btnOutline}>Войти</a>
-              <a href="/register" className={styles.btnPrimary}>Регистрация</a>
+              <a href="/register" className={styles.btnGhost}>Регистрация</a>
+              <a href="/login" className={styles.btnPrimary}>Войти</a>
             </>
           )}
         </div>

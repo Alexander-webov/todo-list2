@@ -7,7 +7,7 @@ export const runtime = 'nodejs';
 
 const SHOP_ID = process.env.YOOKASSA_SHOP_ID;
 const SECRET_KEY = process.env.YOOKASSA_SECRET_KEY;
-const AMOUNT = '149.00';
+const AMOUNT = '999.00';
 const CURRENCY = 'RUB';
 
 export async function POST() {

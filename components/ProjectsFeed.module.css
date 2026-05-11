@@ -3,45 +3,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.regionTabs {
-  display: flex;
-  gap: 6px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 4px;
-}
-
-.regionTab {
-  flex: 1;
-  font-family: var(--font);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-muted);
-  background: none;
-  border: none;
-  padding: 10px 16px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: color 0.15s, background 0.15s;
-}
-
-.regionTab:hover {
-  color: var(--text);
-  background: var(--border);
-}
-
-.regionTabActive {
-  color: #fff;
-  background: var(--accent);
-}
-
-.regionTabActive:hover {
-  background: var(--accent-hover);
-  color: #fff;
+  gap: 14px;
 }
 
 .newBadge {
@@ -78,7 +40,7 @@
 .grid {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .loader {
@@ -105,7 +67,7 @@
 .endMsg {
   font-size: 13px;
   color: var(--text-dim);
-  font-family: var(--font-mono);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
 }
 
 /* Registration gate for guests */
@@ -196,3 +158,115 @@
   transition: color 0.15s;
 }
 .registerGateSecondary:hover { color: var(--text-muted); }
+
+
+/* Loading skeleton + empty state */
+.skeletonCard {
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: rgba(13, 18, 29, 0.78);
+  border: 1px solid rgba(47, 62, 96, 0.58);
+  overflow: hidden;
+}
+
+.skeletonTop,
+.skeletonBottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.skeletonTop {
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.skeletonBottom {
+  margin-top: 18px;
+}
+
+.skeletonLine {
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.045), rgba(255,255,255,0.11), rgba(255,255,255,0.045));
+  background-size: 240% 100%;
+  animation: skeletonShimmer 1.25s ease-in-out infinite;
+}
+
+@keyframes skeletonShimmer {
+  from { background-position: 220% 0; }
+  to { background-position: -120% 0; }
+}
+
+.skeletonBadge { width: 112px; height: 26px; }
+.skeletonSmall { width: 96px; height: 20px; }
+.skeletonTitle { width: min(72%, 520px); height: 24px; margin-bottom: 16px; border-radius: 10px; }
+.skeletonText { width: 100%; height: 14px; margin-bottom: 10px; border-radius: 8px; }
+.skeletonTextShort { width: 64%; height: 14px; border-radius: 8px; }
+.skeletonTag { width: 78px; height: 26px; border-radius: 9px; }
+.skeletonButton { width: 168px; height: 40px; margin-left: auto; border-radius: 12px; }
+
+.emptyState {
+  border-radius: 20px;
+  border: 1px solid rgba(47, 62, 96, 0.7);
+  background:
+    radial-gradient(circle at top, rgba(59, 130, 246, 0.12), transparent 42%),
+    rgba(13, 18, 29, 0.84);
+  padding: 42px 28px;
+  text-align: center;
+}
+
+.emptyIcon {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 14px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--accent-hover);
+  font-size: 28px;
+  border: 1px solid rgba(59, 130, 246, 0.22);
+}
+
+.emptyTitle {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.emptyText {
+  max-width: 430px;
+  margin: 0 auto 18px;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.emptyBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 12px 26px rgba(59, 130, 246, 0.18);
+}
+
+.registerGateBox {
+  background:
+    radial-gradient(circle at top, rgba(59, 130, 246, 0.16), transparent 44%),
+    rgba(13, 18, 29, 0.95);
+  border-color: rgba(96, 165, 250, 0.28);
+  border-radius: 22px;
+}
+
+.registerGatePrimary {
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  box-shadow: 0 12px 26px rgba(59, 130, 246, 0.2);
+}

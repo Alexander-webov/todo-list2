@@ -4,16 +4,17 @@ import { useRouter } from 'next/navigation';
 import styles from './ProjectCard.module.css';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { scoreProject } from '@/lib/scoring';
 import { calcMatch, getMatchLabel } from '@/lib/match';
 import { trackApplication } from './ApplicationMotivator';
-/* import { CustomerBadge } from '@/components/CustomerBadge'; */
 
 const SOURCE_META = {
   fl: { name: 'FL.ru', color: '#ff6600', flag: '🇷🇺' },
   kwork: { name: 'Kwork', color: '#ff4d00', flag: '🇷🇺' },
   freelanceru: { name: 'Freelance.ru', color: '#2ecc71', flag: '🇷🇺' },
   youdo: { name: 'Youdo', color: '#f5a623', flag: '🇷🇺' },
+  freelancer: { name: 'Freelance.com', color: '#29b2fe', flag: '🌐' },
+  peopleperhour: { name: 'PeoplePerHour', color: '#f7931a', flag: '🌐' },
+  guru: { name: 'Guru.com', color: '#5b3cc4', flag: '🌐' },
 };
 
 function formatBudget(min, max, currency) {
@@ -31,6 +32,14 @@ function timeAgo(dateStr) {
   catch { return ''; }
 }
 
+function isFreshProject(dateStr) {
+  if (!dateStr) return false;
+  try {
+    const diffMin = (Date.now() - new Date(dateStr).getTime()) / 60000;
+    return diffMin < 5;
+  } catch { return false; }
+}
+
 export function ProjectCard({ project, profile, style }) {
   const router = useRouter();
   const [modal, setModal] = useState(false);
@@ -39,51 +48,20 @@ export function ProjectCard({ project, profile, style }) {
   const [copied, setCopied] = useState(false);
   const [sending, setSending] = useState(false);
   const [sendDone, setSendDone] = useState(false);
-  const [translating, setTranslating] = useState(false);
-  const [translated, setTranslated] = useState(null);
 
   const meta = SOURCE_META[project.source] || { name: project.source, color: '#6b7a99', flag: '🌐' };
   const budget = formatBudget(project.budget_min, project.budget_max, project.currency);
   const url = project.referral_url || project.url;
-  const scoring = scoreProject(project);
 
   const matchPct = profile ? calcMatch(project, profile) : null;
   const matchInfo = matchPct !== null ? getMatchLabel(matchPct) : null;
 
-  // Премиум-флаг: только премиум видит кнопку AI-отклика, остальным — замок
   const isPremium = !!profile?.is_premium && (
     !profile?.premium_until || new Date(profile.premium_until) > new Date()
   );
 
-  const isEnglish = false;
-  const displayTitle = translated?.title || project.title;
-  const displayDesc = translated?.description || project.description;
-
-  async function translate() {
-    if (translated) { setTranslated(null); return; }
-    setTranslating(true);
-    try {
-      const text = `Заголовок: ${project.title}\n\nОписание: ${project.description || ''}`;
-      const res = await fetch('/api/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-      });
-      const data = await res.json();
-      if (data.translated) {
-        // Парсим ответ
-        const lines = data.translated.split('\n');
-        const titleLine = lines.find(l => l.toLowerCase().startsWith('заголовок:'));
-        const descStart = lines.findIndex(l => l.toLowerCase().startsWith('описание:'));
-        const title = titleLine ? titleLine.replace(/^заголовок:\s*/i, '').trim() : data.translated.split('\n')[0];
-        const description = descStart >= 0
-          ? lines.slice(descStart).join('\n').replace(/^описание:\s*/i, '').trim()
-          : '';
-        setTranslated({ title, description });
-      }
-    } catch (_) { }
-    setTranslating(false);
-  }
+  const dateForFresh = project.published_at || project.created_at;
+  const fresh = isFreshProject(dateForFresh);
 
   async function generateResponse() {
     setModal(true);
@@ -97,7 +75,6 @@ export function ProjectCard({ project, profile, style }) {
         body: JSON.stringify({ title: project.title, description: project.description, source: project.source, budget }),
       });
       const data = await res.json();
-      // Если требуется премиум — закрываем модалку и ведём на /pricing
       if (res.status === 402 || data.premium_required) {
         setModal(false);
         setLoading(false);
@@ -120,109 +97,106 @@ export function ProjectCard({ project, profile, style }) {
 
   async function sendResponse() {
     setSending(true);
-    try { await navigator.clipboard.writeText(response); } catch (_) { }
-    // Трекаем отклик (AI-генерированный)
+    try { await navigator.clipboard.writeText(response); } catch (_) {}
     trackApplication(project.id, true);
     setSendDone(true);
     setSending(false);
-    // Открываем биржу в новой вкладке
     window.open(url, '_blank', 'noopener,noreferrer');
-    // И сразу переключаем текущую вкладку на follow-up экран
     setTimeout(() => {
       setModal(false);
       router.push(`/projects/${project.id}/responded`);
     }, 400);
   }
 
-  // Клик по "Перейти →": открывает биржу в новой вкладке,
-  // текущую переводит на follow-up экран. preventDefault нужен потому что
-  // target=_blank в <a> сам по себе не остановит навигацию текущей вкладки
-  // если мы одновременно делаем router.push.
-  function handleGoClick(e) {
-    e.preventDefault();
-    trackApplication(project.id, false);
-    window.open(url, '_blank', 'noopener,noreferrer');
-    router.push(`/projects/${project.id}/responded`);
-  }
-
   function closeModal(e) {
     if (e.target === e.currentTarget) setModal(false);
   }
 
+  function handleAiClick(e) {
+    if (!isPremium) return; // ссылка на /pricing сработает сама
+    e.preventDefault();
+    generateResponse();
+  }
+
   return (
     <>
-      <article className={`${styles.card} animate-in`} style={style}>
-        <div className={styles.topRow}>
+      <article
+        className={`${styles.card} ${fresh ? styles.cardFresh : ''} animate-in`}
+        style={style}
+      >
+        {/* ── Row 1: source badge (left) + time (right) ── */}
+        <div className={styles.rowTop}>
           <span className={styles.sourceBadge} style={{ '--source-color': meta.color }}>
-            <span>{meta.flag}</span>
+            <span className={styles.sourceFlag}>{meta.flag}</span>
             <span>{meta.name}</span>
           </span>
-          {project.category && (
-            <span className={styles.categoryBadge}>{project.category}</span>
-          )}
-          <span className={styles.scoreBadge} style={{
-            color: scoring.color,
-            background: scoring.bg,
-            border: `1px solid ${scoring.color}30`,
-          }}>
-            {scoring.label}
-          </span>
-          {matchInfo && (
-            <span className={styles.matchBadge} style={{ color: matchInfo.color, background: `${matchInfo.color}18`, border: `1px solid ${matchInfo.color}40` }}>
-              🎯 {matchInfo.label}
-            </span>
-          )}
-          <span className={styles.time}>
-            {timeAgo(project.published_at || project.created_at)}
-          </span>
+
+          <div className={styles.topRight}>
+            {matchInfo && (
+              <span
+                className={styles.matchBadge}
+                style={{ color: matchInfo.color, background: `${matchInfo.color}18`, border: `1px solid ${matchInfo.color}40` }}
+              >
+                🎯 {matchInfo.label}
+              </span>
+            )}
+            {fresh ? (
+              <span className={styles.freshBadge}>
+                <span className={styles.freshIcon}>⚡</span>
+                <span>Только что</span>
+              </span>
+            ) : (
+              <span className={styles.time}>
+                <span className={styles.timeIcon}>🕒</span>
+                {timeAgo(dateForFresh)}
+              </span>
+            )}
+          </div>
         </div>
 
-        <a href={`/projects/${project.id}`} className={styles.titleLink}>
-          <h2 className={styles.title}>{displayTitle}</h2>
-        </a>
+        {/* ── Row 2: title (left) + budget (right) ── */}
+        <div className={styles.rowTitle}>
+          <a href={`/projects/${project.id}`} className={styles.titleLink}>
+            <h2 className={styles.title}>{project.title}</h2>
+          </a>
+          {budget ? (
+            <span className={styles.budget}>{budget}</span>
+          ) : (
+            <span className={styles.budgetEmpty}>Не указан</span>
+          )}
+        </div>
 
-        {displayDesc && (
-          <p className={styles.description}>{displayDesc}</p>
+        {/* ── Row 3: description ── */}
+        {project.description && (
+          <p className={styles.description}>{project.description}</p>
         )}
 
-        {project.tags?.length > 0 && (
+        {/* ── Row 4: tags (left) + AI button (right) ── */}
+        <div className={styles.rowFooter}>
           <div className={styles.tags}>
-            {project.tags.slice(0, 5).map(tag => (
+            {project.tags?.slice(0, 5).map(tag => (
               <span key={tag} className={styles.tag}>{tag}</span>
             ))}
+            {project.category && !project.tags?.length && (
+              <span className={styles.tag}>{project.category}</span>
+            )}
           </div>
-        )}
-        {/* 
-        {project.customer_external_id && (
-          <CustomerBadge customerId={project.customer_external_id} source={project.source} />
-        )} */}
 
-        <div className={styles.footer}>
-          {budget
-            ? <span className={styles.budget}>{budget}</span>
-            : <span className={styles.budgetEmpty}>Бюджет не указан</span>
-          }
-          <div className={styles.actions}>
-            {isEnglish && (
-              <button className={styles.translateBtn} onClick={translate} disabled={translating}>
-                {translating ? '...' : translated ? '🌐 Оригинал' : '🌐 RU'}
-              </button>
-            )}
-            {isPremium ? (
-              <button className={styles.aiBtn} onClick={generateResponse}>✦ AI Отклик</button>
-            ) : (
-              <a className={styles.aiBtn}
-                 href="/pricing?from=ai"
-                 title="AI-отклики доступны в премиум-подписке">
-                🔒 AI Отклик
-              </a>
-            )}
-            <a href={url}
-              onClick={handleGoClick}
-              className={styles.ctaBtn} style={{ '--source-color': meta.color }}>
-              Перейти →
+          {isPremium ? (
+            <button className={styles.aiBtn} onClick={handleAiClick}>
+              <span className={styles.aiIcon}>✦</span>
+              <span>Откликнуться с AI</span>
+            </button>
+          ) : (
+            <a
+              className={styles.aiBtn}
+              href="/pricing?from=ai"
+              title="AI-отклики доступны в премиум-подписке"
+            >
+              <span className={styles.aiIcon}>🔒</span>
+              <span>Откликнуться с AI</span>
             </a>
-          </div>
+          )}
         </div>
       </article>
 
@@ -260,7 +234,11 @@ export function ProjectCard({ project, profile, style }) {
                   <button className={styles.copyBtn} onClick={copyText}>
                     {copied ? '✓ Скопировано' : '⎘ Копировать'}
                   </button>
-                  <button className={`${styles.sendBtn} ${sendDone ? styles.sendBtnDone : ''}`} onClick={sendResponse} disabled={sending || sendDone}>
+                  <button
+                    className={`${styles.sendBtn} ${sendDone ? styles.sendBtnDone : ''}`}
+                    onClick={sendResponse}
+                    disabled={sending || sendDone}
+                  >
                     {sendDone ? '✓ Скопировано! Открываю...' : sending ? '...' : `Откликнуться на ${meta.name} →`}
                   </button>
                 </div>

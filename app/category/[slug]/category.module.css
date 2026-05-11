@@ -34,10 +34,10 @@
 
 .itemTop { display: flex; justify-content: space-between; margin-bottom: 8px; }
 .source { font-size: 11px; font-weight: 700; color: var(--accent); }
-.date { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); }
+.date { font-size: 11px; color: var(--text-dim); font-family: var(--font-inter), Inter, Arial, sans-serif; }
 .itemTitle { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
 .itemDesc { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px; }
-.budget { font-size: 13px; font-weight: 700; color: var(--green); font-family: var(--font-mono); }
+.budget { font-size: 13px; font-weight: 700; color: var(--green); font-family: var(--font-inter), Inter, Arial, sans-serif; }
 
 .cta {
   background: var(--bg-card); border: 1px solid var(--border-bright);

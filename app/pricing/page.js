@@ -130,7 +130,7 @@ export default function PricingPage() {
             </div>
           </div>
           <div className={styles.planPrice}>
-            <span className={styles.price}>149</span>
+            <span className={styles.price}>999</span>
             <span className={styles.currency}>₽</span>
             <span className={styles.period}>/ 30 дней</span>
           </div>
@@ -153,7 +153,7 @@ export default function PricingPage() {
             </div>
           </div>
           <div className={styles.planPrice}>
-            <span className={styles.price}>$5</span>
+            <span className={styles.price}>$15</span>
             <span className={styles.period}>/ 30 days</span>
           </div>
           <button

@@ -100,7 +100,7 @@
   color: var(--text);
   border-radius: var(--radius-sm);
   font-size: 14px;
-  font-family: var(--font);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
   outline: none;
   transition: border-color 0.15s;
 }
@@ -117,7 +117,7 @@
   cursor: pointer;
   white-space: nowrap;
   transition: filter 0.15s;
-  font-family: var(--font);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
 }
 .submitBtn:hover:not(:disabled) { filter: brightness(1.08); }
 .submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -150,7 +150,7 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  font-family: var(--font);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
   margin-top: 4px;
 }
 .okBtn:hover { border-color: var(--text-muted); }

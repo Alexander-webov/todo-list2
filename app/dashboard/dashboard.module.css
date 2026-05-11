@@ -152,7 +152,7 @@
   font-size: 14px;
   font-weight: 700;
   color: var(--text);
-  font-family: var(--font-mono);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
 }
 
 .paymentStatus {
@@ -211,7 +211,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
-  font-family: var(--font);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
   font-size: 14px;
   padding: 9px 12px;
   outline: none;
@@ -227,7 +227,7 @@
 }
 
 .tgBtn {
-  font-family: var(--font);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
   font-size: 13px;
   font-weight: 700;
   color: #fff;

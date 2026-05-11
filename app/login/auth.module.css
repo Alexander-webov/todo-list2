@@ -76,7 +76,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
-  font-family: var(--font);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
   font-size: 14px;
   padding: 11px 14px;
   outline: none;
@@ -101,7 +101,7 @@
 }
 
 .btn {
-  font-family: var(--font);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: #fff;

@@ -29,10 +29,10 @@
 .item:hover { border-color: var(--border-bright); background: var(--bg-card-hover); }
 .itemTop { display: flex; justify-content: space-between; margin-bottom: 8px; }
 .category { font-size: 11px; font-weight: 600; color: var(--text-dim); background: var(--border); padding: 2px 8px; border-radius: 100px; }
-.date { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); }
+.date { font-size: 11px; color: var(--text-dim); font-family: var(--font-inter), Inter, Arial, sans-serif; }
 .itemTitle { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
 .itemDesc { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px; }
-.budget { font-size: 13px; font-weight: 700; color: var(--green); font-family: var(--font-mono); }
+.budget { font-size: 13px; font-weight: 700; color: var(--green); font-family: var(--font-inter), Inter, Arial, sans-serif; }
 
 .cta { background: var(--bg-card); border: 1px solid var(--border-bright); border-radius: var(--radius); padding: 32px; text-align: center; }
 .cta h2 { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 8px; }

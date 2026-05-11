@@ -111,7 +111,7 @@ export function PremiumGate({ isLoggedIn = false, totalProjects = 0 }) {
               <>
                 <span className={styles.payFlag}>🇷🇺</span>
                 <span className={styles.payText}>
-                  <span className={styles.payAmount}>149 ₽</span>
+                  <span className={styles.payAmount}>999 ₽</span>
                   <span className={styles.payLabel}>YooKassa · карты РФ</span>
                 </span>
               </>
@@ -127,7 +127,7 @@ export function PremiumGate({ isLoggedIn = false, totalProjects = 0 }) {
               <>
                 <span className={styles.payFlag}>🌍</span>
                 <span className={styles.payText}>
-                  <span className={styles.payAmount}>$5</span>
+                  <span className={styles.payAmount}>$15</span>
                   <span className={styles.payLabel}>Stripe · мировые карты</span>
                 </span>
               </>

@@ -64,7 +64,7 @@
 }
 .timerText b {
   color: var(--accent);
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
   font-weight: 800;
 }
 .timerBar {
@@ -123,7 +123,7 @@
   color: var(--text);
   text-align: left;
   transition: all 0.15s;
-  font-family: var(--font);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
 }
 .statusBtn:hover:not(:disabled) {
   border-color: var(--accent);
@@ -185,7 +185,7 @@
   font-weight: 600;
   color: var(--text-muted);
   transition: all 0.15s;
-  font-family: var(--font);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
 }
 .saveBtn:hover:not(:disabled) {
   border-color: #f59e0b;

@@ -129,7 +129,7 @@
 }
 
 .stat { text-align: center; }
-.statValue { display: block; font-size: 22px; font-weight: 800; color: var(--text); font-family: var(--font-mono); }
+.statValue { display: block; font-size: 22px; font-weight: 800; color: var(--text); font-family: var(--font-inter), Inter, Arial, sans-serif; }
 .statLabel { display: block; font-size: 11px; color: var(--text-dim); margin-top: 2px; }
 .statDivider { width: 1px; height: 32px; background: var(--border); }
 

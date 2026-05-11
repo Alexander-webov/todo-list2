@@ -1,3 +1,4 @@
+
 .gate {
   position: relative;
   margin-top: -60px;
@@ -6,9 +7,11 @@
 
 .blur {
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 200px;
-  background: linear-gradient(to bottom, transparent, var(--bg) 70%);
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(to bottom, transparent, var(--bg) 72%);
   pointer-events: none;
   z-index: 1;
 }
@@ -16,108 +19,193 @@
 .box {
   position: relative;
   z-index: 2;
-  background: var(--bg-card);
-  border: 1px solid var(--border-bright);
-  border-radius: 16px;
-  padding: 28px 32px 32px;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 30px 32px 32px;
   text-align: center;
-  box-shadow: 0 0 60px rgba(59,130,246,0.08);
+  background:
+    radial-gradient(circle at top, rgba(59, 130, 246, 0.2), transparent 42%),
+    linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(34, 197, 94, 0.04)),
+    rgba(13, 18, 29, 0.96);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
 }
 
-/* Социальные триггеры */
+.box::before {
+  content: 'Полный доступ';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(96, 165, 250, 0.22);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .triggers {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 20px;
-  background: rgba(239,68,68,0.06);
-  border: 1px solid rgba(239,68,68,0.15);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 14px;
   text-align: left;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(47, 62, 96, 0.68);
 }
 
 .trigger {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   font-size: 13px;
+  font-weight: 700;
   color: var(--text-muted);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
-.triggerFire { font-size: 14px; flex-shrink: 0; }
+.triggerFire {
+  font-size: 15px;
+  flex-shrink: 0;
+}
 
-.icon { font-size: 32px; display: block; margin-bottom: 12px; }
+.icon {
+  display: none;
+}
 
 .title {
-  font-size: 20px;
-  font-weight: 800;
+  max-width: 620px;
+  margin: 0 auto 10px;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 950;
   color: var(--text);
-  letter-spacing: -0.4px;
-  margin-bottom: 10px;
+  letter-spacing: -0.04em;
+  line-height: 1.12;
 }
 
 .sub {
-  font-size: 14px;
-  color: var(--text-muted);
-  line-height: 1.7;
-  margin-bottom: 18px;
-}
-
-.perks { display: flex; flex-direction: column; gap: 5px; margin-bottom: 20px; }
-.perk { font-size: 13px; color: var(--green); font-weight: 600; }
-
-.btns { display: flex; flex-direction: column; gap: 10px; }
-
-/* Кнопка триала */
-.btnTrial {
-  display: block;
-  font-family: var(--font);
+  max-width: 560px;
+  margin: 0 auto 22px;
   font-size: 15px;
-  font-weight: 800;
-  color: #fff;
-  background: linear-gradient(135deg, #7c3aed, #a78bfa);
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 14px 20px;
-  cursor: pointer;
-  transition: opacity 0.15s, transform 0.15s;
-  text-decoration: none;
-}
-.btnTrial:hover { opacity: 0.9; transform: translateY(-1px); }
-.btnTrial:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-.btnPrimary {
-  display: block;
-  font-size: 14px; font-weight: 700;
   color: var(--text-muted);
-  background: var(--border);
-  border: 1px solid var(--border-bright);
-  border-radius: var(--radius-sm);
-  padding: 12px 20px;
-  text-decoration: none;
-  transition: background 0.15s, color 0.15s;
+  line-height: 1.75;
 }
-.btnPrimary:hover { background: var(--bg-card-hover); color: var(--text); }
 
-.btnSecondary {
-  display: block;
-  font-size: 13px; font-weight: 600;
-  color: var(--text-dim);
-  text-decoration: none;
-  transition: color 0.15s;
+.sub strong {
+  color: #fff;
 }
-.btnSecondary:hover { color: var(--text-muted); }
+
+.perks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 22px;
+  text-align: left;
+}
+
+.perk {
+  padding: 11px 12px;
+  border-radius: 14px;
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.075);
+  border: 1px solid rgba(34, 197, 94, 0.16);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.payRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.payBtnRu,
+.payBtnInt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  min-height: 62px;
+  border-radius: 16px;
+  padding: 14px 16px;
+  cursor: pointer;
+  color: #fff;
+  text-align: left;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.payBtnRu {
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  box-shadow: 0 16px 34px rgba(59, 130, 246, 0.22);
+}
+
+.payBtnInt {
+  background: linear-gradient(135deg, #0f172a, #7c3aed);
+  box-shadow: 0 16px 34px rgba(124, 58, 237, 0.18);
+  border: 1px solid rgba(167, 139, 250, 0.22);
+}
+
+.payBtnRu:hover:not(:disabled),
+.payBtnInt:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.payBtnRu:disabled,
+.payBtnInt:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.payFlag {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.payText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+}
+
+.payAmount {
+  font-size: 20px;
+  font-weight: 950;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.payLabel {
+  font-size: 11px;
+  font-weight: 750;
+  opacity: 0.82;
+  line-height: 1.1;
+}
+
+.fineprint {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
 
 .trialSuccess {
   background: rgba(34,197,94,0.1);
   border: 1px solid rgba(34,197,94,0.3);
   color: var(--green);
-  border-radius: var(--radius-sm);
+  border-radius: 14px;
   padding: 14px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .trialError {
@@ -126,65 +214,39 @@
   margin-top: 10px;
 }
 
-/* ─── Две кнопки оплаты ─── */
-.payRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 14px;
+.btns,
+.btnTrial,
+.btnPrimary,
+.btnSecondary {
+  display: none;
 }
 
-.payBtnRu, .payBtnInt {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-family: var(--font);
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
-  cursor: pointer;
-  border: none;
-  transition: transform 0.12s, filter 0.15s;
-  color: #fff;
-  text-align: left;
-}
-.payBtnRu  { background: linear-gradient(135deg, #2563eb, #3b82f6); }
-.payBtnInt { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
-.payBtnRu:hover:not(:disabled),
-.payBtnInt:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); }
-.payBtnRu:disabled, .payBtnInt:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+@media (max-width: 700px) {
+  .box {
+    padding: 26px 18px 24px;
+  }
 
-.payFlag { font-size: 22px; line-height: 1; flex-shrink: 0; }
-.payText { display: flex; flex-direction: column; gap: 1px; align-items: flex-start; }
-.payAmount { font-size: 17px; font-weight: 800; line-height: 1.05; letter-spacing: -0.3px; }
-.payLabel  { font-size: 10px; font-weight: 600; opacity: 0.85; line-height: 1.05; }
-
-.fineprint {
-  font-size: 11px;
-  color: var(--text-dim);
-  margin: 0 0 12px;
+  .perks,
+  .payRow {
+    grid-template-columns: 1fr;
+  }
 }
 
 .alt {
+  margin-top: 12px;
   font-size: 12px;
   color: var(--text-muted);
-  line-height: 1.5;
-  margin: 0;
+  line-height: 1.6;
 }
+
 .altLink {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 700;
+  color: var(--accent-hover);
+  font-weight: 900;
 }
-.altLink:hover { text-decoration: underline; }
 
 .payError {
-  font-size: 13px;
-  color: var(--red);
   margin-top: 12px;
-  margin-bottom: 0;
-}
-
-@media (max-width: 500px) {
-  .payRow { grid-template-columns: 1fr; }
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--red);
 }

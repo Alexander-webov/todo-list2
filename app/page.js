@@ -3,7 +3,8 @@ import { getCurrentUser } from '@/lib/auth';
 import { ProjectsFeed } from '@/components/ProjectsFeed';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
-import { StatsBar } from '@/components/StatsBar';
+import { RightSidebar } from '@/components/RightSidebar';
+import { TopBar } from '@/components/TopBar';
 import { RU_SOURCES, INT_SOURCES } from '@/lib/parsers/index';
 import { categoriesForRole } from '@/lib/roles';
 
@@ -20,11 +21,16 @@ async function getInitialProjects({ role, region }) {
   let query = db
     .from('projects')
     .select('*', { count: 'exact' })
+    .order('published_at', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
     .limit(20);
 
-  const regionSources = region === 'int' ? INT_SOURCES : RU_SOURCES;
-  query = query.in('source', regionSources);
+  if (region === 'ru') {
+    query = query.in('source', RU_SOURCES);
+  } else if (region === 'int') {
+    query = query.in('source', INT_SOURCES);
+  }
+  // region === 'all' → не фильтруем по источникам
 
   if (role) {
     const cats = categoriesForRole(role);
@@ -40,20 +46,20 @@ async function getStats() {
   const { count: total } = await db
     .from('projects').select('*', { count: 'exact', head: true });
 
-  const sources = ['fl', 'kwork', 'freelanceru', 'youdo', 'upwork', 'freelancer', 'peopleperhour', 'guru'];
-  const stats = {};
-  await Promise.all(sources.map(async (source) => {
-    const { count } = await db
-      .from('projects').select('*', { count: 'exact', head: true }).eq('source', source);
-    stats[source] = count || 0;
-  }));
-  return { stats, total: total || 0 };
+  // Проекты, добавленные за сегодня
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const { count: todayCount } = await db
+    .from('projects')
+    .select('*', { count: 'exact', head: true })
+    .gte('created_at', startOfDay.toISOString());
+
+  return { total: total || 0, todayCount: todayCount || 0 };
 }
 
 export default async function HomePage({ searchParams }) {
   const { profile } = await getCurrentUser();
 
-  // Если URL без фильтров и у юзера есть user_role — применяем как дефолт
   const urlRole = searchParams?.role;
   const urlCategory = searchParams?.category;
   const urlSource = searchParams?.source;
@@ -66,7 +72,7 @@ export default async function HomePage({ searchParams }) {
 
   const region = searchParams?.region || 'ru';
 
-  const [{ projects, total: feedTotal }, { stats, total }] = await Promise.all([
+  const [{ projects, total: feedTotal }, { total, todayCount }] = await Promise.all([
     getInitialProjects({ role: effectiveRole, region }),
     getStats(),
   ]);
@@ -74,15 +80,18 @@ export default async function HomePage({ searchParams }) {
   return (
     <div className="app-shell">
       <Header />
-      <StatsBar stats={stats} total={total} />
       <main className="main-layout">
         <Sidebar />
-        <ProjectsFeed
-          initialProjects={projects}
-          total={feedTotal}
-          isLoggedIn={!!profile}
-          profile={profile}
-        />
+        <div className="main-content">
+          <TopBar total={total} todayCount={todayCount} />
+          <ProjectsFeed
+            initialProjects={projects}
+            total={feedTotal}
+            isLoggedIn={!!profile}
+            profile={profile}
+          />
+        </div>
+        <RightSidebar />
       </main>
     </div>
   );

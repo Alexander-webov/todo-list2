@@ -27,7 +27,7 @@ export async function POST() {
       line_items: [{
         price_data: {
           currency: 'usd',
-          unit_amount: 500, // $5.00 в центах
+          unit_amount: 1500, // $15.00 в центах
           product_data: {
             name: 'allFreelancersHere Premium',
             description: 'Доступ ко всем проектам на 30 дней',
@@ -48,7 +48,7 @@ export async function POST() {
         user_id: user.id,
         provider: 'stripe',
         provider_id: session.id,
-        amount: 5,
+        amount: 15,
         currency: 'USD',
         status: 'pending',
         days_granted: 30,

@@ -124,3 +124,32 @@
   font-weight: 600;
   color: var(--accent);
 }
+
+/* Cleaner sidebar ads */
+.sidebarAd {
+  border-radius: 18px;
+  background: rgba(13, 18, 29, 0.48);
+  border: 1px dashed rgba(47, 62, 96, 0.62);
+  padding: 16px;
+  opacity: 0.9;
+}
+
+.sidebarAd:hover {
+  border-color: rgba(96, 165, 250, 0.38);
+  background: rgba(17, 24, 39, 0.78);
+}
+
+.sidebarTitle {
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.sidebarDesc {
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.sidebarCta {
+  color: var(--accent-hover);
+  font-weight: 850;
+}

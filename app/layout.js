@@ -1,6 +1,14 @@
 import './globals.css';
 import Script from 'next/script';
+import { Inter } from 'next/font/google';
 import { ExitIntentProvider } from '@/components/ExitIntentProvider';
+
+const inter = Inter({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-inter',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800', '900'],
+});
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://allfreelancershere.ru';
 
@@ -48,7 +56,6 @@ export const metadata = {
 
 const YANDEX_METRIKA_ID = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
 
-// Schema.org разметка для сайта
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
@@ -75,13 +82,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ru" suppressHydrationWarning>
       <head>
-        {/* Яндекс верификация */}
         {process.env.NEXT_PUBLIC_YANDEX_VERIFICATION && (
           <meta name="yandex-verification" content={process.env.NEXT_PUBLIC_YANDEX_VERIFICATION} />
         )}
         <meta name="google-site-verification" content="72vJhUS0537rK-8RQ4TmLRVStFrmvu2MW9-8dMa4B48" />
 
-        {/* Schema.org */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
@@ -90,7 +95,6 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
-        {/* тема */}
         <script dangerouslySetInnerHTML={{
           __html: `
           try {
@@ -99,7 +103,6 @@ export default function RootLayout({ children }) {
           } catch(e) {}
         ` }} />
 
-        {/* Яндекс Метрика */}
         {YANDEX_METRIKA_ID && (
           <Script id="yandex-metrika" strategy="afterInteractive">
             {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -111,7 +114,6 @@ export default function RootLayout({ children }) {
           </Script>
         )}
 
-        {/* Яндекс РСЯ (рекламная сеть) */}
         {(process.env.NEXT_PUBLIC_YANDEX_RTB_FEED || process.env.NEXT_PUBLIC_YANDEX_RTB_SIDEBAR) && (
           <Script id="yandex-rtb" strategy="afterInteractive">
             {`window.yaContextCb = window.yaContextCb || [];`}
@@ -125,7 +127,7 @@ export default function RootLayout({ children }) {
           />
         )}
       </head>
-      <body>
+      <body className={inter.variable}>
         {YANDEX_METRIKA_ID && (
           <noscript>
             <div>
