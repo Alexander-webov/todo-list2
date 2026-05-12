@@ -5,9 +5,7 @@
   gap: 14px;
   padding: 20px 22px;
   border-radius: 18px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
-    rgba(13, 18, 29, 0.88);
+  background: #090e1a;
   border: 1px solid rgba(47, 62, 96, 0.72);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
   transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
@@ -143,9 +141,9 @@
 }
 
 .title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  color: var(--text);
+  color: #fff;
   line-height: 1.35;
   letter-spacing: -0.015em;
 }
@@ -161,13 +159,10 @@
   min-height: 34px;
   padding: 6px 12px;
   border-radius: 12px;
-  font-size: 18px;
-  font-weight: 900;
+  font-size: 16px;
+  font-weight: 400;
   color: #52f28a;
   white-space: nowrap;
-  background: rgba(34, 197, 94, 0.09);
-  border: 1px solid rgba(34, 197, 94, 0.24);
-  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.04);
 }
 
 .budgetEmpty {
@@ -213,8 +208,7 @@
   font-size: 11px;
   font-weight: 750;
   color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(47, 62, 96, 0.72);
+
   padding: 5px 9px;
   border-radius: 9px;
 }
@@ -290,9 +284,9 @@
   font-size: 13px;
   font-weight: 900;
   color: #fff;
-  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  background: #0e1f40;
   border: 1px solid rgba(147, 197, 253, 0.28);
-  box-shadow: 0 12px 26px rgba(59, 130, 246, 0.22);
+  box-shadow: 0 3px 6px rgba(59, 130, 246, 0.22);
   cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
   letter-spacing: 0.01em;
@@ -560,63 +554,63 @@
     align-items: stretch;
   }
 
-  
-.actions {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  flex-wrap: wrap;
-  flex-shrink: 0;
-}
 
-.manualBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  padding: 0 16px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 850;
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(96, 165, 250, 0.22);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
-}
+  .actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
 
-.manualBtn:hover {
-  transform: translateY(-1px);
-  border-color: rgba(96, 165, 250, 0.5);
-  background: rgba(96, 165, 250, 0.08);
-}
+  .manualBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 850;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(96, 165, 250, 0.22);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  }
 
-.manualModalBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 38px;
-  padding: 0 15px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 850;
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(96, 165, 250, 0.22);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-}
+  .manualBtn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(96, 165, 250, 0.5);
+    background: rgba(96, 165, 250, 0.08);
+  }
 
-.manualModalBtn:hover {
-  transform: translateY(-1px);
-  border-color: rgba(96, 165, 250, 0.5);
-  background: rgba(96, 165, 250, 0.08);
-}
+  .manualModalBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 15px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 850;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(96, 165, 250, 0.22);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
 
-.aiBtn {
+  .manualModalBtn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(96, 165, 250, 0.5);
+    background: rgba(96, 165, 250, 0.08);
+  }
+
+  .aiBtn {
     width: 100%;
   }
 

@@ -3,7 +3,7 @@ import { getCurrentUser } from '@/lib/auth';
 import { ProjectsFeed } from '@/components/ProjectsFeed';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
-import { RightSidebar } from '@/components/RightSidebar';
+import { RightSidebar } from '@/components/RightSidebar2';
 import { TopBar } from '@/components/TopBar';
 import { RU_SOURCES, INT_SOURCES } from '@/lib/parsers/index';
 import { categoriesForRole } from '@/lib/roles';
@@ -67,8 +67,8 @@ export default async function HomePage({ searchParams }) {
 
   const effectiveRole = urlRole
     || (profile?.user_role && !urlCategory && !urlSource && !urlSearch
-          ? profile.user_role
-          : null);
+      ? profile.user_role
+      : null);
 
   const region = searchParams?.region || 'ru';
 
@@ -91,7 +91,7 @@ export default async function HomePage({ searchParams }) {
             profile={profile}
           />
         </div>
-        <RightSidebar />
+        {/*  <RightSidebar /> */}
       </main>
     </div>
   );

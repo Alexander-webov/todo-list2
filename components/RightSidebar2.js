@@ -17,7 +17,7 @@ export function RightSidebar() {
   }, []);
 
   return (
-    <aside className={styles.rightSidebar}>
+    <aside className={styles.rightSidebar} >
       {/* Telegram-каналы */}
       <div className={styles.section}>
         <p className={styles.sectionTitle}>📢 Telegram-каналы</p>

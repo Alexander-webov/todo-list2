@@ -21,10 +21,10 @@ const SOURCE_META = {
 function formatBudget(min, max, currency) {
   if (!min && !max) return null;
   const sym = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '₽';
-  const fmt = (n) => n >= 1000 ? `${(n / 1000).toFixed(0)}k` : n;
-  if (min && max) return `${sym}${fmt(min)} — ${sym}${fmt(max)}`;
-  if (min) return `от ${sym}${fmt(min)}`;
-  if (max) return `до ${sym}${fmt(max)}`;
+  const fmt = (n) => n >= 1000 ? `${(n / 1000).toFixed(0)} 000` : n;
+  if (min && max) return `${fmt(min)}${sym} — ${fmt(max)}${sym}`;
+  if (min) return `от ${fmt(min)}${sym}`;
+  if (max) return `до ${fmt(max)}${sym}`;
 }
 
 function timeAgo(dateStr) {
@@ -208,34 +208,40 @@ export function ProjectCard({ project, profile, style }) {
               <span key={tag} className={styles.tag}>{tag}</span>
             ))}
             {project.category && !project.tags?.length && (
-              <span className={styles.tag}>{project.category}</span>
+              <span className={styles.tag}>#{project.category}</span>
             )}
           </div>
 
           <div className={styles.actions}>
-            <GoToProjectButton
-              projectId={project.id}
-              url={url}
-              source={meta.name}
-              className={styles.manualBtn}
-            >
-              Откликнуться →
-            </GoToProjectButton>
+
 
             {isPremium ? (
-              <button className={styles.aiBtn} onClick={handleAiClick}>
-                <span className={styles.aiIcon}>✦</span>
-                <span>AI-отклик</span>
-              </button>
+              <div className="">
+                <button className={styles.aiBtn} onClick={handleAiClick}>
+                  <span className={styles.aiIcon}>✦</span>
+                  <span>AI-отклик</span>
+                </button>
+                <GoToProjectButton
+                  projectId={project.id}
+                  url={url}
+                  source={meta.name}
+                  className={styles.manualBtn}
+                >
+                  Откликнуться →
+                </GoToProjectButton>
+              </div>
+
             ) : (
-              <a
-                className={styles.aiBtn}
-                href="/pricing?from=ai"
-                title="AI-отклики доступны в премиум-подписке"
-              >
-                <span className={styles.aiIcon}>🔒</span>
-                <span>AI-отклик</span>
-              </a>
+              <div className="">
+                <a
+                  className={styles.aiBtn}
+                  href="/pricing?from=ai"
+                  title="AI-отклики доступны в премиум-подписке"
+                >
+                  <span className={styles.aiIcon}>🔒</span>
+                  <span>AI-отклик</span>
+                </a>
+              </div>
             )}
           </div>
         </div>
