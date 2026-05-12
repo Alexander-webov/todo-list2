@@ -34,7 +34,7 @@
   font-weight: 700;
   letter-spacing: -0.06em;
   line-height: 0.95;
-  color: var(--text);
+  color: #8b97b1;
 }
 
 .todayBadge {
@@ -123,7 +123,7 @@
   border-radius: 14px;
   padding: 0 4px 0 14px;
   transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
-  width: min(100%, 340px);
+  width: 100%;
 }
 
 .searchForm:focus-within {

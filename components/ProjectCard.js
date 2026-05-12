@@ -160,6 +160,14 @@ export function ProjectCard({ project, profile, style }) {
             <span className={styles.sourceFlag}>{meta.flag}</span>
             <span>{meta.name}</span>
           </span>
+          <div className={styles.tags}>
+            {project.tags?.slice(0, 5).map(tag => (
+              <span key={tag} className={styles.tag}>{tag}</span>
+            ))}
+            {project.category && !project.tags?.length && (
+              <span className={styles.tag}>#{project.category}</span>
+            )}
+          </div>
 
           <div className={styles.topRight}>
             {matchInfo && (
@@ -189,11 +197,7 @@ export function ProjectCard({ project, profile, style }) {
           <a href={`/projects/${project.id}`} className={styles.titleLink}>
             <h2 className={styles.title}>{project.title}</h2>
           </a>
-          {budget ? (
-            <span className={styles.budget}>{budget}</span>
-          ) : (
-            <span className={styles.budgetEmpty}>Не указан</span>
-          )}
+
         </div>
 
         {/* ── Row 3: description ── */}
@@ -203,14 +207,12 @@ export function ProjectCard({ project, profile, style }) {
 
         {/* ── Row 4: tags (left) + AI button (right) ── */}
         <div className={styles.rowFooter}>
-          <div className={styles.tags}>
-            {project.tags?.slice(0, 5).map(tag => (
-              <span key={tag} className={styles.tag}>{tag}</span>
-            ))}
-            {project.category && !project.tags?.length && (
-              <span className={styles.tag}>#{project.category}</span>
-            )}
-          </div>
+
+          {budget ? (
+            <span className={styles.budget}>{budget}</span>
+          ) : (
+            <span className={styles.budgetEmpty}>Не указан</span>
+          )}
 
           <div className={styles.actions}>
 
@@ -227,7 +229,7 @@ export function ProjectCard({ project, profile, style }) {
                   source={meta.name}
                   className={styles.manualBtn}
                 >
-                  Откликнуться →
+                  Перейти →
                 </GoToProjectButton>
               </div>
 
