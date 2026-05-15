@@ -75,12 +75,29 @@ export function ProjectsFeed({ initialProjects = [], total = 0, isLoggedIn = fal
       if (!source && region && region !== 'all') qs.set('region', region);
 
       const res = await fetch(`/api/projects?${qs}`);
-      const data = await res.json();
 
-      setProjects(prev => replace ? data.projects : [...prev, ...data.projects]);
-      setHasMore(pageNum < data.pages);
+      // res.json() can throw on non-JSON responses (5xx HTML pages, network
+      // errors). Defend against that and against missing fields — better to
+      // render an empty feed than crash the whole page with "Application error".
+      let data = null;
+      try { data = await res.json(); } catch { data = null; }
+
+      if (!res.ok || !data) {
+        console.error('Ошибка загрузки проектов:', res.status, data?.error);
+        if (replace) setProjects([]);
+        setHasMore(false);
+        return;
+      }
+
+      const projects = Array.isArray(data.projects) ? data.projects : [];
+      const pages = Number.isFinite(data.pages) ? data.pages : 0;
+
+      setProjects(prev => replace ? projects : [...prev, ...projects]);
+      setHasMore(pageNum < pages);
     } catch (e) {
       console.error('Ошибка загрузки:', e);
+      if (replace) setProjects([]);
+      setHasMore(false);
     } finally {
       setLoading(false);
     }
@@ -112,9 +129,13 @@ export function ProjectsFeed({ initialProjects = [], total = 0, isLoggedIn = fal
         if (!source && region && region !== 'all') qs.set('region', region);
 
         const res = await fetch(`/api/projects?${qs}`);
-        const data = await res.json();
+        if (!res.ok) return;
 
-        if (data.projects?.length > 0) {
+        let data = null;
+        try { data = await res.json(); } catch { return; }
+        if (!data) return;
+
+        if (Array.isArray(data.projects) && data.projects.length > 0) {
           lastChecked.current = new Date().toISOString();
           setNewCount(c => c + data.projects.length);
         }

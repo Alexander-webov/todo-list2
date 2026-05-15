@@ -6,20 +6,45 @@ export const runtime = 'nodejs';
 
 // GET — список всех объявлений (для админки) или активных (для фронта)
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const position = searchParams.get('position'); // feed | sidebar | telegram | all
-  const activeOnly = searchParams.get('active') === '1';
+  try {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('[api/admin/ads] Missing Supabase env');
+      return NextResponse.json(
+        { error: 'Server not configured', ads: [] },
+        { status: 500 }
+      );
+    }
 
-  const db = supabaseAdmin();
-  let query = db.from('ads').select('*').order('priority', { ascending: false });
+    const { searchParams } = new URL(request.url);
+    const position = searchParams.get('position'); // feed | sidebar | telegram | all
+    const activeOnly = searchParams.get('active') === '1';
 
-  if (activeOnly) query = query.eq('is_active', true);
-  if (position) query = query.or(`position.eq.${position},position.eq.all`);
+    const db = supabaseAdmin();
+    let query = db.from('ads').select('*').order('priority', { ascending: false });
 
-  const { data, error } = await query;
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (activeOnly) query = query.eq('is_active', true);
+    if (position) query = query.or(`position.eq.${position},position.eq.all`);
 
-  return NextResponse.json({ ads: data || [] });
+    const { data, error } = await query;
+    if (error) {
+      console.error('[api/admin/ads] Supabase error:', error);
+      // If the table simply doesn't exist yet (migrations not applied),
+      // return an empty list with 200 so the frontend renders normally.
+      const tableMissing = /relation .*ads.* does not exist/i.test(error.message ?? '');
+      return NextResponse.json(
+        { error: error.message, ads: [] },
+        { status: tableMissing ? 200 : 500 }
+      );
+    }
+
+    return NextResponse.json({ ads: data || [] });
+  } catch (e) {
+    console.error('[api/admin/ads] uncaught:', e);
+    return NextResponse.json(
+      { error: e?.message || 'Internal server error', ads: [] },
+      { status: 500 }
+    );
+  }
 }
 
 // POST — создать новое объявление
