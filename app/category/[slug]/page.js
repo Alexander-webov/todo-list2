@@ -1,6 +1,8 @@
 export const dynamic = 'force-dynamic';
 import { supabaseAdmin } from '@/lib/supabase';
 import { CATEGORY_SEO } from '@/lib/categories';
+import { CATEGORY_CONTENT } from '@/lib/category-content';
+import { ARTICLES } from '@/app/blog/articles-data';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
 import styles from './category.module.css';
@@ -8,10 +10,19 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://allfreelancershere.ru';
+
+function renderIntro(text) {
+  return text.trim().split('\n').map((line, i) => {
+    if (line.startsWith('## ')) return <h2 key={i} className={styles.contentH2}>{line.slice(3)}</h2>;
+    if (line.trim() === '') return null;
+    return <p key={i} className={styles.contentP}>{line}</p>;
+  });
+}
+
 export async function generateMetadata({ params }) {
   const cat = CATEGORY_SEO[params.slug];
   if (!cat) return { title: 'Не найдено' };
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://allfreelancershere.ru';
   return {
     title: `${cat.name} — фриланс заказы | FreelanceHere`,
     description: cat.description,
@@ -30,6 +41,8 @@ export default async function CategoryPage({ params }) {
   const cat = CATEGORY_SEO[params.slug];
   if (!cat) notFound();
 
+  const content = CATEGORY_CONTENT[params.slug];
+
   const db = supabaseAdmin();
 
   const { data: projects, count } = await db
@@ -45,8 +58,44 @@ export default async function CategoryPage({ params }) {
     guru: 'Guru.com',
   };
 
+  // Похожие статьи блога для перелинковки
+  const relatedBlog = (content?.relatedBlog || [])
+    .filter((s) => ARTICLES[s])
+    .map((s) => ({ slug: s, title: ARTICLES[s].title }));
+
+  // JSON-LD: CollectionPage + хлебные крошки + FAQ
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${cat.name} — фриланс заказы`,
+    description: cat.description,
+    url: `${SITE_URL}/category/${params.slug}`,
+  };
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Главная', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: cat.name, item: `${SITE_URL}/category/${params.slug}` },
+    ],
+  };
+  const faqSchema = content?.faqs?.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: content.faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      }
+    : null;
+
   return (
     <div className={styles.page}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
       <Header />
       <div className={styles.container}>
         <div className={styles.hero}>
@@ -105,6 +154,40 @@ export default async function CategoryPage({ params }) {
             Зарегистрироваться бесплатно
           </a>
         </div>
+
+        {/* Уникальный контент: про категорию */}
+        {content?.intro && (
+          <section className={styles.content}>
+            {renderIntro(content.intro)}
+          </section>
+        )}
+
+        {/* FAQ + микроразметка FAQPage */}
+        {content?.faqs?.length > 0 && (
+          <section className={styles.faq}>
+            <h2 className={styles.faqTitle}>Частые вопросы</h2>
+            {content.faqs.map((f, i) => (
+              <div key={i} className={styles.faqItem}>
+                <h3 className={styles.faqQ}>{f.q}</h3>
+                <p className={styles.faqA}>{f.a}</p>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {/* Перелинковка на блог */}
+        {relatedBlog.length > 0 && (
+          <section className={styles.readMore}>
+            <h2 className={styles.readMoreTitle}>Полезное по теме</h2>
+            <div className={styles.readMoreLinks}>
+              {relatedBlog.map((a) => (
+                <Link key={a.slug} href={`/blog/${a.slug}`} className={styles.readMoreLink}>
+                  {a.title} →
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

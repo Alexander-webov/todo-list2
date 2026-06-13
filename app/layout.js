@@ -1,15 +1,10 @@
 import './globals.css';
 import Script from 'next/script';
-import { Inter } from 'next/font/google';
+// stub
 import { ExitIntentProvider } from '@/components/ExitIntentProvider';
 import { PromoModal } from '@/components/PromoModal';
 
-const inter = Inter({
-  subsets: ['latin', 'cyrillic'],
-  variable: '--font-inter',
-  display: 'swap',
-  weight: ['400', '500', '600', '700', '800', '900'],
-});
+const inter = { variable: '--font-inter' };
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://allfreelancershere.ru';
 
