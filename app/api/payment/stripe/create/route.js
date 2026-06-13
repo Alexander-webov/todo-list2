@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import Stripe from 'stripe';
+import { stripeUnitAmountCents, getPrice } from '@/lib/pricing';
 
 export const runtime = 'nodejs';
 
@@ -27,7 +28,7 @@ export async function POST() {
       line_items: [{
         price_data: {
           currency: 'usd',
-          unit_amount: 1500, // $15.00 в центах
+          unit_amount: stripeUnitAmountCents(), // цена со скидкой из lib/pricing.js
           product_data: {
             name: 'allFreelancersHere Premium',
             description: 'Доступ ко всем проектам на 30 дней',
@@ -48,7 +49,7 @@ export async function POST() {
         user_id: user.id,
         provider: 'stripe',
         provider_id: session.id,
-        amount: 15,
+        amount: getPrice('int').final,
         currency: 'USD',
         status: 'pending',
         days_granted: 30,

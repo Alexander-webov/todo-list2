@@ -2,12 +2,13 @@ import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
+import { yookassaAmountString } from '@/lib/pricing';
 
 export const runtime = 'nodejs';
 
 const SHOP_ID = process.env.YOOKASSA_SHOP_ID;
 const SECRET_KEY = process.env.YOOKASSA_SECRET_KEY;
-const AMOUNT = '999.00';
+const AMOUNT = yookassaAmountString(); // цена со скидкой из lib/pricing.js
 const CURRENCY = 'RUB';
 
 export async function POST() {

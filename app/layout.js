@@ -2,6 +2,7 @@ import './globals.css';
 import Script from 'next/script';
 import { Inter } from 'next/font/google';
 import { ExitIntentProvider } from '@/components/ExitIntentProvider';
+import { PromoModal } from '@/components/PromoModal';
 
 const inter = Inter({
   subsets: ['latin', 'cyrillic'],
@@ -137,6 +138,7 @@ export default function RootLayout({ children }) {
           </noscript>
         )}
         {children}
+        <PromoModal />
         <ExitIntentProvider />
       </body>
     </html>

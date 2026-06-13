@@ -1,6 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import styles from './pricing.module.css';
+import { getPrice, DISCOUNT_ACTIVE, DISCOUNT_PERCENT } from '@/lib/pricing';
+
+const RU = getPrice('ru');
+const INT = getPrice('int');
 
 export default function PricingPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(null); // null = ещё не загружено
@@ -84,6 +88,12 @@ export default function PricingPage() {
     <div className={styles.page}>
       <a href="/" className={styles.back}>← Назад</a>
 
+      {DISCOUNT_ACTIVE && (
+        <div className={styles.promoBanner}>
+          🔥 Акция: <b>−{DISCOUNT_PERCENT}%</b> на премиум — только ограниченное время
+        </div>
+      )}
+
       <div className={styles.hero}>
         <span className={styles.badge}>⚡ Премиум</span>
         <h1 className={styles.title}>
@@ -130,9 +140,15 @@ export default function PricingPage() {
             </div>
           </div>
           <div className={styles.planPrice}>
-            <span className={styles.price}>999</span>
+            {RU.discountActive && (
+              <span className={styles.oldPrice}>{RU.base}</span>
+            )}
+            <span className={styles.price}>{RU.final}</span>
             <span className={styles.currency}>₽</span>
             <span className={styles.period}>/ 30 дней</span>
+            {RU.discountActive && (
+              <span className={styles.saleBadge}>−{RU.discountPercent}%</span>
+            )}
           </div>
           <button
             onClick={payYookassa}
@@ -153,8 +169,14 @@ export default function PricingPage() {
             </div>
           </div>
           <div className={styles.planPrice}>
-            <span className={styles.price}>$15</span>
+            {INT.discountActive && (
+              <span className={styles.oldPrice}>${INT.base}</span>
+            )}
+            <span className={styles.price}>${INT.final}</span>
             <span className={styles.period}>/ 30 days</span>
+            {INT.discountActive && (
+              <span className={styles.saleBadge}>−{INT.discountPercent}%</span>
+            )}
           </div>
           <button
             onClick={payStripe}

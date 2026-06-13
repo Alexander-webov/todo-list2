@@ -204,7 +204,7 @@ export function ProjectsFeed({ initialProjects = [], total = 0, isLoggedIn = fal
             </p>
             <div className={styles.registerGatePerks}>
               <span>✓ Регистрация бесплатна</span>
-              <span>✓ Подписка от 999 ₽ в месяц</span>
+              <span>✓ Подписка от 499 ₽ в месяц <b style={{color:'#f97316'}}>(−50%)</b></span>
               <span>✓ Все проекты со всех бирж</span>
               <span>✓ AI-отклики и Telegram-уведомления</span>
             </div>

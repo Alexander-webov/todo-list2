@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase';
+import { ARTICLE_SLUGS } from './blog/articles-data';
 
 const SITE_URL = 'https://allfreelancershere.ru';
 
@@ -13,24 +14,7 @@ const ROLE_SLUGS = [
   'designer', 'videomaker', 'developer', 'smm', 'other',
 ];
 
-const BLOG_SLUGS = [
-  'kak-najti-zakazy-na-freelanse',
-  'kak-napisat-otklik-na-freelanse',
-  'luchshie-frilansy-birzhi-rossii',
-  'skolko-zarabatyvaet-frilanser',
-  'kak-nachat-frilansat-s-nulya',
-  'pochemu-frilanser-ne-nahodit-zakazov',
-  'kak-uvelichit-chek-frilanser',
-  'avtomatizaciya-frilanser',
-  'frilanser-brendirovanie',
-  'niche-frilanser',
-  'frilanser-passive-income',
-  'frilanser-dogovor',
-  'frilanser-klienty-telegram',
-  'frilanser-rate-hour',
-  'frilanser-repeat-clients',
-  'frilanser-scope-creep',
-];
+const BLOG_SLUGS = ARTICLE_SLUGS;
 
 export default async function sitemap() {
   const db = supabaseAdmin();
