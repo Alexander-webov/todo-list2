@@ -4,6 +4,7 @@ import { RU_SOURCES, INT_SOURCES } from '@/lib/parsers/index';
 import { categoriesForRole } from '@/lib/roles';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic'; // использует request.url — рендер только на запросе
 
 export async function GET(request) {
   try {
@@ -37,7 +38,7 @@ export async function GET(request) {
 
     let query = db
       .from('projects')
-      .select('*', { count: 'exact' })
+      .select('*', { count: 'planned' })
       .order('published_at', { ascending: false, nullsFirst: false })
       .order('created_at', { ascending: false })
       .range(from, from + limit - 1);

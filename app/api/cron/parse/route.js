@@ -19,7 +19,7 @@ async function cleanupIfNeeded() {
 
   const { count } = await db
     .from('projects')
-    .select('*', { count: 'exact', head: true });
+    .select('*', { count: 'planned', head: true });
 
   console.log(`[Cleanup] Проектов в БД: ${count}`);
 

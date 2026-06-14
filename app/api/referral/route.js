@@ -53,7 +53,7 @@ export async function GET() {
   // Считаем сколько людей зарегистрировалось по нашему коду
   const { count } = await db
     .from('profiles')
-    .select('*', { count: 'exact', head: true })
+    .select('*', { count: 'planned', head: true })
     .eq('referred_by', user.id);
 
   return NextResponse.json({
