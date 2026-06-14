@@ -34,9 +34,9 @@
 
   --radius: 14px;
   --radius-sm: 10px;
-  --font: var(--font-inter), Inter, Arial, sans-serif;
-  --font-display: var(--font-inter), Inter, Arial, sans-serif;
-  --font-mono: var(--font-inter), Inter, Arial, sans-serif;
+  --font: var(--font-sans), "Segoe UI", Roboto, Arial, sans-serif;
+  --font-display: var(--font-sans), "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
   font-size: 15px;
 }
@@ -220,5 +220,5 @@ button,
 input,
 select,
 textarea {
-  font-family: var(--font-inter), Inter, Arial, sans-serif !important;
+  font-family: var(--font-sans), "Segoe UI", Roboto, Arial, sans-serif !important;
 }

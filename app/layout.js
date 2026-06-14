@@ -1,10 +1,15 @@
 import './globals.css';
 import Script from 'next/script';
-// stub
+import { Manrope } from 'next/font/google';
 import { ExitIntentProvider } from '@/components/ExitIntentProvider';
 import { PromoModal } from '@/components/PromoModal';
 
-const inter = { variable: '--font-inter' };
+const sans = Manrope({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-sans',
+  display: 'swap',
+});
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://allfreelancershere.ru';
 
@@ -123,7 +128,7 @@ export default function RootLayout({ children }) {
           />
         )}
       </head>
-      <body className={inter.variable}>
+      <body className={sans.variable}>
         {YANDEX_METRIKA_ID && (
           <noscript>
             <div>

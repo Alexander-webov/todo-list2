@@ -1,6 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import styles from './PremiumGate.module.css';
+import { getPrice } from '@/lib/pricing';
+
+const RU = getPrice('ru');
+const INT = getPrice('int');
 
 export function PremiumGate({ isLoggedIn = false, totalProjects = 0 }) {
   const [stats, setStats] = useState(null);
@@ -111,8 +115,11 @@ export function PremiumGate({ isLoggedIn = false, totalProjects = 0 }) {
               <>
                 <span className={styles.payFlag}>🇷🇺</span>
                 <span className={styles.payText}>
-                  <span className={styles.payAmount}>999 ₽</span>
-                  <span className={styles.payLabel}>YooKassa · карты РФ</span>
+                  <span className={styles.payAmount}>
+                    {RU.discountActive && <s style={{opacity:.6,marginRight:6,fontWeight:500}}>{RU.base} ₽</s>}
+                    {RU.final} ₽
+                  </span>
+                  <span className={styles.payLabel}>YooKassa · карты РФ{RU.discountActive ? ' · −50%' : ''}</span>
                 </span>
               </>
             )}
@@ -127,8 +134,11 @@ export function PremiumGate({ isLoggedIn = false, totalProjects = 0 }) {
               <>
                 <span className={styles.payFlag}>🌍</span>
                 <span className={styles.payText}>
-                  <span className={styles.payAmount}>$15</span>
-                  <span className={styles.payLabel}>Stripe · мировые карты</span>
+                  <span className={styles.payAmount}>
+                    {INT.discountActive && <s style={{opacity:.6,marginRight:6,fontWeight:500}}>${INT.base}</s>}
+                    ${INT.final}
+                  </span>
+                  <span className={styles.payLabel}>Stripe · мировые карты{INT.discountActive ? ' · −50%' : ''}</span>
                 </span>
               </>
             )}
