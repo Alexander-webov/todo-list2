@@ -98,7 +98,7 @@ export default async function SourcePage({ params }) {
   const db = supabaseAdmin();
   const { data: projects, count } = await db
     .from('projects')
-    .select('*', { count: 'planned' })
+    .select('*', { count: 'exact' })
     .eq('source', source.key)
     .order('created_at', { ascending: false })
     .limit(50);

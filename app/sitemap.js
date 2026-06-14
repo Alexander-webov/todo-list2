@@ -1,9 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase';
 import { ARTICLE_SLUGS } from './blog/articles-data';
 
-// force-dynamic: не запекать sitemap на билде (иначе сборка виснет на запросе к БД).
-export const dynamic = 'force-dynamic';
-
 const SITE_URL = 'https://allfreelancershere.ru';
 
 const CATEGORY_SLUGS = [
@@ -20,20 +17,16 @@ const ROLE_SLUGS = [
 const BLOG_SLUGS = ARTICLE_SLUGS;
 
 export default async function sitemap() {
-  // Статьи из БД — если база недоступна, не валим sitemap, просто без них.
-  let newDbSlugs = [];
-  try {
-    const db = supabaseAdmin();
-    const { data: dbArticles } = await db
-      .from('blog_articles')
-      .select('slug, updated_at')
-      .eq('published', true);
+  const db = supabaseAdmin();
 
-    const dbSlugs = new Set(BLOG_SLUGS);
-    newDbSlugs = (dbArticles || []).filter(a => !dbSlugs.has(a.slug));
-  } catch (e) {
-    newDbSlugs = [];
-  }
+  // Статьи из БД
+  const { data: dbArticles } = await db
+    .from('blog_articles')
+    .select('slug, updated_at')
+    .eq('published', true);
+
+  const dbSlugs = new Set(BLOG_SLUGS);
+  const newDbSlugs = (dbArticles || []).filter(a => !dbSlugs.has(a.slug));
 
   return [
     { url: SITE_URL, lastModified: new Date(), changeFrequency: 'hourly', priority: 1 },
