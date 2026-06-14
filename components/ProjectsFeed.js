@@ -6,10 +6,12 @@ import { AdSlot, YandexAdSlot } from './AdSlot';
 import { ApplicationMotivator } from './ApplicationMotivator';
 import { WelcomeBackBanner } from './WelcomeBackBanner';
 import { PremiumGate } from './PremiumGate';
+import { isCpaMode } from '@/lib/monetization';
 import styles from './ProjectsFeed.module.css';
 
 const FREE_LIMIT = 5;
 const AD_EVERY = 5;
+const CPA_MODE = isCpaMode();
 
 export function ProjectsFeed({ initialProjects = [], total = 0, isLoggedIn = false, profile = null }) {
   const params = useSearchParams();
@@ -26,7 +28,8 @@ export function ProjectsFeed({ initialProjects = [], total = 0, isLoggedIn = fal
   const isPremium = !!profile?.is_premium && (
     !profile?.premium_until || new Date(profile.premium_until) > new Date()
   );
-  const hasFullAccess = isPremium;
+  // В режиме CPA лента открыта всем (монетизируем трафик офферами, а не пейволлом).
+  const hasFullAccess = CPA_MODE ? true : isPremium;
 
   useEffect(() => {
     fetch('/api/admin/ads?position=feed&active=1')
@@ -153,8 +156,8 @@ export function ProjectsFeed({ initialProjects = [], total = 0, isLoggedIn = fal
   }
 
   const visibleProjects = hasFullAccess ? projects : projects.slice(0, FREE_LIMIT);
-  const showRegisterGate = !isLoggedIn && projects.length > FREE_LIMIT;
-  const showPremiumGate = isLoggedIn && !isPremium && projects.length > FREE_LIMIT;
+  const showRegisterGate = !CPA_MODE && !isLoggedIn && projects.length > FREE_LIMIT;
+  const showPremiumGate = !CPA_MODE && isLoggedIn && !isPremium && projects.length > FREE_LIMIT;
 
   return (
     <div className={styles.feed}>

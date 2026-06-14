@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import styles from './PromoModal.module.css';
 import { getPrice, DISCOUNT_ACTIVE, DISCOUNT_PERCENT } from '@/lib/pricing';
+import { isSubscriptionMode } from '@/lib/monetization';
 
 // Попап акции −50%.
 // Показывается:
@@ -38,6 +39,7 @@ export function PromoModal() {
 
   useEffect(() => {
     if (!DISCOUNT_ACTIVE) return;
+    if (!isSubscriptionMode()) return; // в режиме CPA не пушим подписку
 
     // Уже показывали в этой сессии?
     try {

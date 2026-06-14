@@ -215,36 +215,15 @@ export function ProjectCard({ project, profile, style }) {
           )}
 
           <div className={styles.actions}>
-
-
-            {isPremium ? (
-              <div className="">
-                <button className={styles.aiBtn} onClick={handleAiClick}>
-                  <span className={styles.aiIcon}>✦</span>
-                  <span>AI-отклик</span>
-                </button>
-                <GoToProjectButton
-                  projectId={project.id}
-                  url={url}
-                  source={meta.name}
-                  className={styles.manualBtn}
-                >
-                  Перейти →
-                </GoToProjectButton>
-              </div>
-
-            ) : (
-              <div className="">
-                <a
-                  className={styles.aiBtn}
-                  href="/pricing?from=ai"
-                  title="AI-отклики доступны в премиум-подписке"
-                >
-                  <span className={styles.aiIcon}>🔒</span>
-                  <span>AI-отклик</span>
-                </a>
-              </div>
-            )}
+            {/* AI-отклик отключён. Всем показываем прямой переход к проекту. */}
+            <GoToProjectButton
+              projectId={project.id}
+              url={url}
+              source={meta.name}
+              className={styles.manualBtn}
+            >
+              Перейти →
+            </GoToProjectButton>
           </div>
         </div>
       </article>

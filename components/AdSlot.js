@@ -50,11 +50,17 @@ export function AdSlot({ ad }) {
   if (!ad) return null;
 
   function handleClick() {
+    // серверный счётчик кликов
     fetch('/api/ads/click', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: ad.id }),
     }).catch(() => {});
+    // цель в Метрику — чтобы видеть клики по рекламе в воронке рядом с трафиком
+    if (typeof window !== 'undefined' && window.ym) {
+      const mid = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
+      if (mid) window.ym(mid, 'reachGoal', 'ad_click');
+    }
   }
 
   return (
