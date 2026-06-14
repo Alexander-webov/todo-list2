@@ -270,11 +270,11 @@ export function Sidebar() {
             rel="noopener noreferrer"
             className={`${styles.tgItem} ${styles.tgItemRu}`}
           >
-            <span className={styles.tgFlag}>🇷🇺</span>
+            <span className={styles.tgFlag}> 🇷🇺 </span>
             <span className={styles.tgLabel}>Лучшие заказы РФ</span>
             <span className={styles.tgArrow}>→</span>
           </a>
-          {/*  <a
+          <a
             href="https://t.me/allfreelancershere_feed_int"
             target="_blank"
             rel="noopener noreferrer"
@@ -283,7 +283,7 @@ export function Sidebar() {
             <span className={styles.tgFlag}>🌐</span>
             <span className={styles.tgLabel}>Лучшие заказы INT</span>
             <span className={styles.tgArrow}>→</span>
-          </a> */}
+          </a>
 
         </div>
       </div>
@@ -323,7 +323,7 @@ export function Sidebar() {
       {/* Статья дня */}
       <ArticleOfDay />
       <div className={styles.contact}>
-        <p>Не нашёл ответ на свой вопрос? (programm.aleks@gmail.com)</p>
+        <p>Не нашёл ответ на свой вопрос? programm.aleks@gmail.com</p>
         <a href="mailto:programm.aleks@gmail.com" className={styles.contactBtn}>
           Написать в поддержку
         </a>

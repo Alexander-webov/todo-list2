@@ -28,7 +28,7 @@ export function RightSidebar() {
             rel="noopener noreferrer"
             className={`${styles.tgItem} ${styles.tgItemRu}`}
           >
-            <span className={styles.tgFlag}>🇷🇺</span>
+            <span className={styles.tgFlag}>{/* 🇷🇺 */}</span>
             <span className={styles.tgLabel}>Лучшие заказы РФ</span>
             <span className={styles.tgArrow}>→</span>
           </a>
