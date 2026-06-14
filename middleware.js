@@ -2,6 +2,18 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 
 export async function middleware(request) {
+  // КЛЮЧЕВОЕ: если у запроса нет cookie сессии Supabase (а у ботов, краулеров
+  // и анонимных посетителей его нет) — НЕ дёргаем Auth вообще.
+  // Именно вызов getUser() на каждый заход бота забивал ~900k auth-запросов в сутки
+  // и клал бесплатный инстанс. Теперь Auth трогаем только для реально залогиненных.
+  const hasAuthCookie = request.cookies
+    .getAll()
+    .some((c) => c.name.startsWith('sb-') && c.name.includes('auth-token'));
+
+  if (!hasAuthCookie) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -25,11 +37,15 @@ export async function middleware(request) {
     }
   );
 
+  // Только для залогиненных: обновляем сессию.
   await supabase.auth.getUser();
 
   return supabaseResponse;
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|api|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  // Не запускаем middleware на статике, картинках, api, sitemap и robots.
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|api|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)',
+  ],
 };
