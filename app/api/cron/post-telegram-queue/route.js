@@ -16,6 +16,12 @@ export const maxDuration = 60;
 // postsPerHour из админки делим на 5, так получаем постов на один запуск.
 const RUNS_PER_HOUR = 2;
 
+// Защита от наложения: постинг идёт по одному с паузами, один проход может длиться
+// десятки секунд. Не даём запустить второй поверх первого.
+let isPosting = false;
+let postingSince = 0;
+const MAX_POST_MS = 3 * 60 * 1000;
+
 export async function GET(request) {
   // Защита секретом (как в /api/cron/parse)
   const authHeader = request.headers.get('authorization');
@@ -24,7 +30,19 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const db = supabaseAdmin();
+  if (isPosting && Date.now() - postingSince < MAX_POST_MS) {
+    return NextResponse.json({ skipped: 'already_running' });
+  }
+  isPosting = true;
+  postingSince = Date.now();
+  try {
+    return await runPosting();
+  } finally {
+    isPosting = false;
+  }
+}
+
+async function runPosting() {  const db = supabaseAdmin();
 
   // 1. Читаем настройки
   const { data: settings } = await db

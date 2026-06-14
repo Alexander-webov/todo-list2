@@ -8,6 +8,12 @@ export const maxDuration = 60;
 const MAX_PROJECTS = 4500;
 const KEEP_PROJECTS = 2500;
 
+// Защита от наложения: если предыдущий проход ещё идёт — новый вызов не стартует
+// второй парсинг поверх первого. Именно наложение забивало память/CPU и роняло сайт.
+let isRunning = false;
+let runningSince = 0;
+const MAX_RUN_MS = 5 * 60 * 1000;
+
 async function cleanupIfNeeded() {
   const db = supabaseAdmin();
 
@@ -52,6 +58,14 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // Предыдущий проход ещё не закончился — пропускаем этот вызов.
+  if (isRunning && Date.now() - runningSince < MAX_RUN_MS) {
+    console.log('[Cron] Пропуск: предыдущий парсинг ещё идёт');
+    return NextResponse.json({ skipped: true, reason: 'already_running' });
+  }
+
+  isRunning = true;
+  runningSince = Date.now();
   try {
     const deleted = await cleanupIfNeeded();
     const added = await runAllParsers();
@@ -65,5 +79,7 @@ export async function GET(request) {
   } catch (err) {
     console.error('[Cron] Ошибка:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
+  } finally {
+    isRunning = false;
   }
 }
