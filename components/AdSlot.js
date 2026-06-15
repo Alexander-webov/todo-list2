@@ -55,7 +55,7 @@ export function AdSlot({ ad }) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: ad.id }),
-    }).catch(() => { });
+    }).catch(() => {});
     // цель в Метрику — чтобы видеть клики по рекламе в воронке рядом с трафиком
     if (typeof window !== 'undefined' && window.ym) {
       const mid = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
@@ -94,7 +94,7 @@ export function YandexAdSlot({ blockId }) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    /*     if (hide) return; // премиуму — не загружаем */
+    if (hide) return; // премиуму — не загружаем
     if (!blockId) return;
 
     // Ждём загрузки скрипта context.js
