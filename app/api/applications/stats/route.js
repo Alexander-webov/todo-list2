@@ -41,7 +41,7 @@ export async function GET() {
   // Общее количество (отдельным запросом — count only)
   const { count: total } = await db
     .from('applications')
-    .select('*', { count: 'exact', head: true })
+    .select('*', { count: 'planned', head: true })
     .eq('user_id', user.id);
 
   // Streak + XP из профиля

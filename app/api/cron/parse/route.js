@@ -8,19 +8,18 @@ export const maxDuration = 60;
 const MAX_PROJECTS = 4500;
 const KEEP_PROJECTS = 2500;
 
-// Защита от наложения запусков: если предыдущий проход ещё идёт —
-// новый крон-вызов не стартует второй парсинг поверх первого.
-// Именно наложение забивало память/CPU и роняло веб-сервер.
+// Защита от наложения: если предыдущий проход ещё идёт — новый вызов не стартует
+// второй парсинг поверх первого. Именно наложение забивало память/CPU и роняло сайт.
 let isRunning = false;
 let runningSince = 0;
-const MAX_RUN_MS = 5 * 60 * 1000; // страховка: считаем зависшим через 5 мин
+const MAX_RUN_MS = 5 * 60 * 1000;
 
 async function cleanupIfNeeded() {
   const db = supabaseAdmin();
 
   const { count } = await db
     .from('projects')
-    .select('*', { count: 'exact', head: true });
+    .select('*', { count: 'planned', head: true });
 
   console.log(`[Cleanup] Проектов в БД: ${count}`);
 
@@ -59,7 +58,7 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Если предыдущий проход ещё не закончился — пропускаем этот вызов.
+  // Предыдущий проход ещё не закончился — пропускаем этот вызов.
   if (isRunning && Date.now() - runningSince < MAX_RUN_MS) {
     console.log('[Cron] Пропуск: предыдущий парсинг ещё идёт');
     return NextResponse.json({ skipped: true, reason: 'already_running' });

@@ -28,7 +28,7 @@ export async function POST(request) {
   const hourAgo = new Date(Date.now() - 3600e3).toISOString();
   const { count } = await db
     .from('email_captures')
-    .select('*', { count: 'exact', head: true })
+    .select('*', { count: 'planned', head: true })
     .eq('ip_hash', ipHash)
     .gte('created_at', hourAgo);
 

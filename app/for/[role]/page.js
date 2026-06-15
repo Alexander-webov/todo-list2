@@ -52,7 +52,7 @@ export default async function RolePage({ params }) {
   // Проекты роли (из всех мапящихся категорий)
   const { data: projects, count } = await db
     .from('projects')
-    .select('*', { count: 'exact' })
+    .select('*', { count: 'planned' })
     .in('category', cats.length > 0 ? cats : ['___none___'])
     .order('created_at', { ascending: false })
     .limit(50);

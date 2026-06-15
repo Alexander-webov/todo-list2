@@ -175,9 +175,9 @@ export function Sidebar() {
                 className={`${styles.checkBtn} ${isActive ? styles.checkBtnActive : ''}`}
                 onClick={() => setFilter('source', s.key)}
               >
-                {/*                 <span className={`${styles.checkbox} ${isActive ? styles.checkboxOn : ''}`}>
+                <span className={`${styles.checkbox} ${isActive ? styles.checkboxOn : ''}`}>
                   {isActive && <span className={styles.checkMark}>✓</span>}
-                </span> */}
+                </span>
                 <span className={styles.checkLabel}>{s.label}</span>
                 {sourceCounts[s.key] !== undefined && (
                   <span className={styles.checkCount}>{sourceCounts[s.key]}</span>
@@ -200,9 +200,9 @@ export function Sidebar() {
                 className={`${styles.checkBtn} ${isActive ? styles.checkBtnActive : ''}`}
                 onClick={() => setFilter('source', s.key)}
               >
-                {/*                 <span className={`${styles.checkbox} ${isActive ? styles.checkboxOn : ''}`}>
+                <span className={`${styles.checkbox} ${isActive ? styles.checkboxOn : ''}`}>
                   {isActive && <span className={styles.checkMark}>✓</span>}
-                </span> */}
+                </span>
                 <span className={styles.checkLabel}>{s.label}</span>
                 {sourceCounts[s.key] !== undefined && (
                   <span className={styles.checkCount}>{sourceCounts[s.key]}</span>
@@ -261,7 +261,7 @@ export function Sidebar() {
       </button>
 
       {/* Telegram-каналы */}
-      {/*<div className={styles.section}>
+      <div className={styles.section}>
         <p className={styles.sectionTitle}>📢 Telegram-каналы</p>
         <div className={styles.tgList}>
           <a
@@ -270,11 +270,11 @@ export function Sidebar() {
             rel="noopener noreferrer"
             className={`${styles.tgItem} ${styles.tgItemRu}`}
           >
-            <span className={styles.tgFlag}>🇷🇺</span>
+            <span className={styles.tgFlag}> 🇷🇺 </span>
             <span className={styles.tgLabel}>Лучшие заказы РФ</span>
             <span className={styles.tgArrow}>→</span>
           </a>
-           <a
+          <a
             href="https://t.me/allfreelancershere_feed_int"
             target="_blank"
             rel="noopener noreferrer"
@@ -286,7 +286,7 @@ export function Sidebar() {
           </a>
 
         </div>
-      </div>*/}
+      </div>
 
       {/* Рекламный блок */}
       {sidebarAd ? (
@@ -323,7 +323,7 @@ export function Sidebar() {
       {/* Статья дня */}
       <ArticleOfDay />
       <div className={styles.contact}>
-        {/*         <p>Не нашёл ответ на свой вопрос? programm.aleks@gmail.com</p> */}
+        <p>Не нашёл ответ на свой вопрос? programm.aleks@gmail.com</p>
         <a href="mailto:programm.aleks@gmail.com" className={styles.contactBtn}>
           Написать в поддержку
         </a>
