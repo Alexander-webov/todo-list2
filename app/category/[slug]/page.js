@@ -47,7 +47,7 @@ export default async function CategoryPage({ params }) {
 
   const { data: projects, count } = await db
     .from('projects')
-    .select('*', { count: 'planned' })
+    .select('*', { count: 'exact' })
     .eq('category', cat.dbCategory)
     .order('created_at', { ascending: false })
     .limit(50);

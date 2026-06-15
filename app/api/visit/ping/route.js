@@ -31,7 +31,7 @@ export async function POST() {
     const dayAgo = new Date(Date.now() - 24 * 3600e3).toISOString();
     const { count } = await db
       .from('projects')
-      .select('*', { count: 'planned', head: true })
+      .select('*', { count: 'exact', head: true })
       .gte('created_at', dayAgo);
     newProjectsSinceLastVisit = count || 0;
   }
