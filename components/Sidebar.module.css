@@ -250,6 +250,22 @@
   line-height: 1;
 }
 
+.contact {
+  text-align: center;
+}
+
+.contactBtn {
+  background-color: #0f1d44;
+  border-radius: 15px;
+  display: inline-block;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid rgb(30, 50, 88)
+}
+
 @media (max-width: 1100px) {
-  .sidebar { display: none; }
+  .sidebar {
+    display: none;
+  }
 }
