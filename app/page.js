@@ -20,7 +20,7 @@ async function getInitialProjects({ role, region }) {
   const db = supabaseAdmin();
   let query = db
     .from('projects')
-    .select('*', { count: 'exact' })
+    .select('*', { count: 'planned' })
     .order('published_at', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
     .limit(20);
@@ -44,14 +44,14 @@ async function getInitialProjects({ role, region }) {
 async function getStats() {
   const db = supabaseAdmin();
   const { count: total } = await db
-    .from('projects').select('*', { count: 'exact', head: true });
+    .from('projects').select('*', { count: 'planned', head: true });
 
   // Проекты, добавленные за сегодня
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
   const { count: todayCount } = await db
     .from('projects')
-    .select('*', { count: 'exact', head: true })
+    .select('*', { count: 'planned', head: true })
     .gte('created_at', startOfDay.toISOString());
 
   return { total: total || 0, todayCount: todayCount || 0 };

@@ -16,10 +16,10 @@ export async function GET() {
   const dayAgo = new Date(now - 86400e3).toISOString();
 
   const [pendingRes, pendingRuRes, pendingIntRes, hourRes, dayLogRes, lastPostRes] = await Promise.all([
-    db.from('posting_queue').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-    db.from('posting_queue').select('*', { count: 'exact', head: true }).eq('status', 'pending').eq('target_channel', 'ru'),
-    db.from('posting_queue').select('*', { count: 'exact', head: true }).eq('status', 'pending').eq('target_channel', 'int'),
-    db.from('telegram_posts_log').select('*', { count: 'exact', head: true }).gte('posted_at', hourAgo),
+    db.from('posting_queue').select('*', { count: 'planned', head: true }).eq('status', 'pending'),
+    db.from('posting_queue').select('*', { count: 'planned', head: true }).eq('status', 'pending').eq('target_channel', 'ru'),
+    db.from('posting_queue').select('*', { count: 'planned', head: true }).eq('status', 'pending').eq('target_channel', 'int'),
+    db.from('telegram_posts_log').select('*', { count: 'planned', head: true }).gte('posted_at', hourAgo),
     db.from('telegram_posts_log').select('score, target_channel').gte('posted_at', dayAgo),
     db.from('telegram_posts_log').select('posted_at, target_channel, source, category, score').order('posted_at', { ascending: false }).limit(10),
   ]);

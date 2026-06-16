@@ -14,6 +14,17 @@ const nextConfig = {
       { protocol: 'https', hostname: '**' },
     ],
   },
+  async redirects() {
+    return [
+      // www → без-www (канонический домен — allfreelancershere.ru). 301.
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.allfreelancershere.ru' }],
+        destination: 'https://allfreelancershere.ru/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

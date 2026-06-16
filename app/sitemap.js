@@ -16,17 +16,24 @@ const ROLE_SLUGS = [
 
 const BLOG_SLUGS = ARTICLE_SLUGS;
 
-export default async function sitemap() {
-  const db = supabaseAdmin();
+export const dynamic = 'force-dynamic'; // не пререндерить в билде (билд не лезет в БД)
 
-  // Статьи из БД
-  const { data: dbArticles } = await db
-    .from('blog_articles')
-    .select('slug, updated_at')
-    .eq('published', true);
+export default async function sitemap() {
+  // Если база недоступна — sitemap всё равно отдаётся (без статей из БД), билд не падает.
+  let dbArticles = [];
+  try {
+    const db = supabaseAdmin();
+    const { data } = await db
+      .from('blog_articles')
+      .select('slug, updated_at')
+      .eq('published', true);
+    dbArticles = data || [];
+  } catch (err) {
+    console.error('[sitemap] db error:', err.message);
+  }
 
   const dbSlugs = new Set(BLOG_SLUGS);
-  const newDbSlugs = (dbArticles || []).filter(a => !dbSlugs.has(a.slug));
+  const newDbSlugs = dbArticles.filter(a => !dbSlugs.has(a.slug));
 
   return [
     { url: SITE_URL, lastModified: new Date(), changeFrequency: 'hourly', priority: 1 },

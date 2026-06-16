@@ -5,6 +5,11 @@ import { supabaseAdmin } from '@/lib/supabase';
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
+// Замок от наложения запусков парсера (наложение забивало память/CPU и роняло базу).
+let isRunning = false;
+let runningSince = 0;
+const MAX_RUN_MS = 5 * 60 * 1000;
+
 const MAX_PROJECTS = 4500;
 const KEEP_PROJECTS = 2500;
 
@@ -13,7 +18,7 @@ async function cleanupIfNeeded() {
 
   const { count } = await db
     .from('projects')
-    .select('*', { count: 'exact', head: true });
+    .select('*', { count: 'planned', head: true });
 
   console.log(`[Cleanup] Проектов в БД: ${count}`);
 
@@ -52,6 +57,11 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  if (isRunning && Date.now() - runningSince < MAX_RUN_MS) {
+    return NextResponse.json({ skipped: true, reason: 'already_running' });
+  }
+  isRunning = true;
+  runningSince = Date.now();
   try {
     const deleted = await cleanupIfNeeded();
     const added = await runAllParsers();
@@ -65,5 +75,7 @@ export async function GET(request) {
   } catch (err) {
     console.error('[Cron] Ошибка:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
+  } finally {
+    isRunning = false;
   }
 }
