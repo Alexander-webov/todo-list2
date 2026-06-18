@@ -88,6 +88,7 @@ export default function RootLayout({ children }) {
         )}
         <meta name="google-site-verification" content="72vJhUS0537rK-8RQ4TmLRVStFrmvu2MW9-8dMa4B48" />
         <meta name="mitgo-verification" content="298b2b5f-9db8-43ca-9da3-c5afe2bbfe60" />
+        <meta name="verify-admitad" content="1f2c73273e" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
