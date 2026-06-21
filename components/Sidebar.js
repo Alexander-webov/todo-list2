@@ -313,7 +313,7 @@ export function Sidebar() {
       ) : (
         <div className={styles.adPlaceholder}>
           <span className={styles.adBadge}>Реклама</span>
-          <YandexAdSlot blockId={process.env.NEXT_PUBLIC_YANDEX_RTB_SIDEBAR} />
+          <YandexAdSlot blockId="R-A-19120508-2" />
         </div>
       )}
 

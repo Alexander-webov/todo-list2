@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ProjectCard } from './ProjectCard';
-import { AdSlot, YandexAdSlot } from './AdSlot';
+import { AdSlot, YandexAdSlot, useYandexAdsEnabled } from './AdSlot';
 import { ApplicationMotivator } from './ApplicationMotivator';
 import { WelcomeBackBanner } from './WelcomeBackBanner';
 import { PremiumGate } from './PremiumGate';
@@ -24,6 +24,7 @@ export function ProjectsFeed({ initialProjects = [], total = 0, isLoggedIn = fal
   const lastChecked = useRef(new Date().toISOString());
   const loaderRef = useRef(null);
   const [feedAds, setFeedAds] = useState([]);
+  const yandexEnabled = useYandexAdsEnabled();
 
   const isPremium = !!profile?.is_premium && (
     !profile?.premium_until || new Date(profile.premium_until) > new Date()
@@ -184,11 +185,19 @@ export function ProjectsFeed({ initialProjects = [], total = 0, isLoggedIn = fal
                 profile={profile}
                 style={{ animationDelay: `${Math.min(i % 20, 10) * 40}ms` }}
               />
-              {(i + 1) % AD_EVERY === 0 && (
-                feedAds.length > 0
-                  ? <AdSlot ad={feedAds[Math.floor(i / AD_EVERY) % feedAds.length]} />
-                  : <YandexAdSlot blockId={process.env.NEXT_PUBLIC_YANDEX_RTB_FEED} />
-              )}
+              {(i + 1) % AD_EVERY === 0 && (() => {
+                const adIndex = Math.floor(i / AD_EVERY);
+                const hasOwn = feedAds.length > 0;
+                // оба источника есть → чередуем: чётные слоты — своя реклама, нечётные — Яндекс
+                if (hasOwn && yandexEnabled) {
+                  return adIndex % 2 === 0
+                    ? <AdSlot ad={feedAds[Math.floor(adIndex / 2) % feedAds.length]} />
+                    : <YandexAdSlot blockId="R-A-19120508-1" />;
+                }
+                if (hasOwn) return <AdSlot ad={feedAds[adIndex % feedAds.length]} />;
+                if (yandexEnabled) return <YandexAdSlot blockId="R-A-19120508-1" />;
+                return null;
+              })()}
             </React.Fragment>
           ))}
         </div>

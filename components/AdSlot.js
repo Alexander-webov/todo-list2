@@ -44,6 +44,36 @@ function useHideForPremium() {
   return hide;
 }
 
+// Глобальный кеш флага «реклама Яндекса включена» — один запрос на страницу
+let cachedYandexEnabled = null;
+let yandexPending = null;
+function fetchYandexEnabled() {
+  if (cachedYandexEnabled !== null) return Promise.resolve(cachedYandexEnabled);
+  if (yandexPending) return yandexPending;
+  yandexPending = fetch('/api/settings')
+    .then(r => (r.ok ? r.json() : null))
+    .then(d => {
+      cachedYandexEnabled = d ? d.yandex_ads_enabled !== false : true;
+      return cachedYandexEnabled;
+    })
+    .catch(() => {
+      cachedYandexEnabled = true; // при ошибке — считаем включённой
+      return true;
+    })
+    .finally(() => { yandexPending = null; });
+  return yandexPending;
+}
+
+// Хук: включена ли реклама Яндекса (управляется из админки)
+export function useYandexAdsEnabled() {
+  const [enabled, setEnabled] = useState(cachedYandexEnabled === null ? true : cachedYandexEnabled);
+  useEffect(() => {
+    if (cachedYandexEnabled !== null) { setEnabled(cachedYandexEnabled); return; }
+    fetchYandexEnabled().then(setEnabled);
+  }, []);
+  return enabled;
+}
+
 export function AdSlot({ ad }) {
   const hide = useHideForPremium();
   if (hide) return null;
@@ -90,11 +120,12 @@ export function AdSlot({ ad }) {
 
 export function YandexAdSlot({ blockId }) {
   const hide = useHideForPremium();
+  const yandexEnabled = useYandexAdsEnabled();
   const containerId = `yandex_rtb_${blockId}`;
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    /*     if (hide) return; // премиуму — не загружаем */
+    if (!yandexEnabled) return;
     if (!blockId) return;
 
     // Ждём загрузки скрипта context.js
@@ -117,9 +148,10 @@ export function YandexAdSlot({ blockId }) {
     // Даём скрипту время загрузиться
     const timer = setTimeout(tryRender, 1000);
     return () => clearTimeout(timer);
-  }, [blockId, containerId, hide]);
+  }, [blockId, containerId, hide, yandexEnabled]);
 
   if (hide) return null;
+  if (!yandexEnabled) return null; // выключено из админки
   if (!blockId) return null;
 
   return (

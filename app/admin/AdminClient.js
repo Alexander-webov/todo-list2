@@ -42,9 +42,13 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
   });
   const [adResult, setAdResult] = useState(null);
 
+  // Переключатель рекламы Яндекса
+  const [yandexAdsEnabled, setYandexAdsEnabled] = useState(true);
+  const [yandexSaving, setYandexSaving] = useState(false);
+
   useEffect(() => {
     if (tab === 'articles') loadArticles();
-    if (tab === 'ads') loadAds();
+    if (tab === 'ads') { loadAds(); loadYandexSetting(); }
   }, [tab]);
 
   async function loadAds() {
@@ -55,6 +59,28 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
       setAds(data.ads || []);
     } catch { }
     finally { setAdsLoading(false); }
+  }
+
+  async function loadYandexSetting() {
+    try {
+      const res = await fetch('/api/admin/settings');
+      const data = await res.json();
+      if (typeof data.yandex_ads_enabled === 'boolean') setYandexAdsEnabled(data.yandex_ads_enabled);
+    } catch { }
+  }
+
+  async function toggleYandex() {
+    setYandexSaving(true);
+    try {
+      const next = !yandexAdsEnabled;
+      const res = await fetch('/api/admin/settings', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ yandex_ads_enabled: next }),
+      });
+      const data = await res.json();
+      if (data.success) setYandexAdsEnabled(data.yandex_ads_enabled);
+    } catch { }
+    finally { setYandexSaving(false); }
   }
 
   async function saveAd(e) {
@@ -431,6 +457,16 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
         <div>
           {!editingAd ? (
             <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, padding: '12px 16px', background: 'var(--card)', borderRadius: 8, flexWrap: 'wrap' }}>
+                <span style={{ fontWeight: 600 }}>📢 Реклама Яндекса (РСЯ)</span>
+                <button onClick={toggleYandex} disabled={yandexSaving}
+                  style={{ padding: '6px 18px', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, color: '#fff', background: yandexAdsEnabled ? '#1f9d55' : '#888' }}>
+                  {yandexSaving ? '...' : (yandexAdsEnabled ? 'Включена' : 'Выключена')}
+                </button>
+                <span style={{ fontSize: 13, color: 'var(--muted)' }}>
+                  {yandexAdsEnabled ? 'Показывается на сайте' : 'Скрыта на всём сайте'} · применится в течение минуты
+                </span>
+              </div>
               <button onClick={() => { setEditingAd({}); setAdForm({ title: '', description: '', image_url: '', link: '', position: 'telegram', is_active: true, priority: 0, tg_pin_hours: 2, tg_keep_hours: 48 }); }}
                 style={{ padding: '10px 20px', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, marginBottom: 16 }}>
                 + Добавить рекламу
