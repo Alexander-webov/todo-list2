@@ -7,6 +7,7 @@ import { ApplicationMotivator } from './ApplicationMotivator';
 import { WelcomeBackBanner } from './WelcomeBackBanner';
 import { PremiumGate } from './PremiumGate';
 import { isCpaMode } from '@/lib/monetization';
+import { getPrice } from '@/lib/pricing';
 import styles from './ProjectsFeed.module.css';
 
 const FREE_LIMIT = 5;
@@ -216,7 +217,7 @@ export function ProjectsFeed({ initialProjects = [], total = 0, isLoggedIn = fal
             </p>
             <div className={styles.registerGatePerks}>
               <span>✓ Регистрация бесплатна</span>
-              <span>✓ Подписка от 499 ₽ в месяц <b style={{color:'#f97316'}}>(−50%)</b></span>
+              <span>✓ Подписка от {getPrice('ru').final} ₽ в месяц{getPrice('ru').discountActive && <b style={{color:'#f97316'}}> (−{getPrice('ru').discountPercent}%)</b>}</span>
               <span>✓ Все проекты со всех бирж</span>
               <span>✓ AI-отклики и Telegram-уведомления</span>
             </div>
