@@ -257,17 +257,17 @@
 
 .contactBtn {
   display: block;
-  border: 1px solid #384d70;
+  border: 1px solid var(--border-bright);
   padding: 10px;
   border-radius: 15px;
   margin-top: 15px;
   text-align: center;
-  background-color: #0b2029;
+  background-color: rgba(86, 128, 207, 0.08);
 }
 
 .tgItem {
   display: block;
-  border: 1px solid #384d70;
+  border: 1px solid var(--border-bright);
   padding: 10px;
   border-radius: 15px;
   margin-top: 5px;

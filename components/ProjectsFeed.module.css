@@ -164,8 +164,8 @@
 .skeletonCard {
   padding: 20px 22px;
   border-radius: 18px;
-  background: rgba(13, 18, 29, 0.78);
-  border: 1px solid rgba(47, 62, 96, 0.58);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(206, 215, 231, 0.58);
   overflow: hidden;
 }
 
@@ -208,10 +208,10 @@
 
 .emptyState {
   border-radius: 20px;
-  border: 1px solid rgba(47, 62, 96, 0.7);
+  border: 1px solid rgba(206, 215, 231, 0.7);
   background:
     radial-gradient(circle at top, rgba(59, 130, 246, 0.12), transparent 42%),
-    rgba(13, 18, 29, 0.84);
+    rgba(255, 255, 255, 0.84);
   padding: 42px 28px;
   text-align: center;
 }
@@ -261,7 +261,7 @@
 .registerGateBox {
   background:
     radial-gradient(circle at top, rgba(59, 130, 246, 0.16), transparent 44%),
-    rgba(13, 18, 29, 0.95);
+    rgba(255, 255, 255, 0.95);
   border-color: rgba(96, 165, 250, 0.28);
   border-radius: 22px;
 }

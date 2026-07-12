@@ -7,22 +7,22 @@
 }
 
 :root {
-  --bg: #070b14;
-  --bg-card: #101624;
-  --bg-card-hover: #161f31;
-  --border: #1c2640;
-  --border-bright: #2d3d62;
-  --text: #e8ecf5;
-  --text-muted: #7687ab;
-  --text-dim: #47597c;
-  --text-desc: #8a99bb;
-  --accent: #3b82f6;
-  --accent-glow: rgba(59, 130, 246, 0.22);
-  --accent-hover: #60a5fa;
-  --green: #22c55e;
-  --yellow: #eab308;
-  --red: #ef4444;
-  --orange: #f97316;
+  --bg: #f4f6fb;            /* светлая тема для всех */
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f9fd;
+  --border: #e3e9f3;
+  --border-bright: #d3dcec;
+  --text: #1e2836;
+  --text-muted: #5b6880;
+  --text-dim: #97a2b5;
+  --text-desc: #67738b;
+  --accent: #5680cf;
+  --accent-glow: rgba(86, 128, 207, 0.12);
+  --accent-hover: #456bb3;
+  --green: #3a9d6a;
+  --yellow: #c99a3f;
+  --red: #d9645f;
+  --orange: #e08a56;
 
   --upwork: #14a800;
   --freelancer: #29b2fe;
@@ -42,22 +42,22 @@
 }
 
 [data-theme="light"] {
-  --bg: #f2f5fb;
+  --bg: #f4f6fb;            /* мягкий сине-серый фон */
   --bg-card: #ffffff;
-  --bg-card-hover: #f7f9fe;
-  --border: #dbe3f2;
-  --border-bright: #c6d0e5;
-  --text: #0e1524;
-  --text-muted: #50617f;
-  --text-dim: #8b9ab5;
-  --text-desc: #61728f;
-  --accent: #2563eb;
-  --accent-glow: rgba(37, 99, 235, 0.15);
-  --accent-hover: #1d4ed8;
-  --green: #16a34a;
-  --yellow: #ca8a04;
-  --red: #dc2626;
-  --orange: #ea580c;
+  --bg-card-hover: #f7f9fd;
+  --border: #e3e9f3;        /* мягче границы */
+  --border-bright: #d3dcec;
+  --text: #1e2836;          /* спокойный тёмно-серый вместо почти-чёрного */
+  --text-muted: #5b6880;
+  --text-dim: #97a2b5;
+  --text-desc: #67738b;
+  --accent: #5680cf;        /* спокойный приглушённый синий */
+  --accent-glow: rgba(86, 128, 207, 0.12);
+  --accent-hover: #456bb3;
+  --green: #3a9d6a;
+  --yellow: #c99a3f;
+  --red: #d9645f;
+  --orange: #e08a56;
 }
 
 html {
@@ -66,7 +66,7 @@ html {
 
 body {
   font-family: var(--font);
-  background: #0a0c12;
+  background: var(--bg);
 
   color: var(--text);
   min-height: 100vh;

@@ -261,7 +261,7 @@ export function Sidebar() {
       </button>
 
       {/* Telegram-каналы */}
-      <div className={styles.section}>
+      {/*       <div className={styles.section}>
         <p className={styles.sectionTitle}>📢 Telegram-каналы</p>
         <div className={styles.tgList}>
           <a
@@ -286,7 +286,7 @@ export function Sidebar() {
           </a>
 
         </div>
-      </div>
+      </div> */}
 
       {/* Рекламный блок */}
       {sidebarAd ? (

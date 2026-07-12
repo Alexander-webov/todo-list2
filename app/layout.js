@@ -81,7 +81,7 @@ const organizationSchema = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang="ru" data-theme="light" suppressHydrationWarning>
       <head>
         {process.env.NEXT_PUBLIC_YANDEX_VERIFICATION && (
           <meta name="yandex-verification" content={process.env.NEXT_PUBLIC_YANDEX_VERIFICATION} />
@@ -100,8 +100,7 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{
           __html: `
           try {
-            var t = localStorage.getItem('theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', t);
+            document.documentElement.setAttribute('data-theme', 'light');
           } catch(e) {}
         ` }} />
 

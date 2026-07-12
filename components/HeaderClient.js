@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import styles from './Header.module.css';
-import { ThemeToggle } from './ThemeToggle';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Проекты' },
@@ -46,7 +45,6 @@ export function HeaderClient({ user, isAdmin }) {
             </span>
           </a>
           {/*           <div className={styles.themeWrap}>
-            <ThemeToggle />
           </div> */}
         </div>
 
