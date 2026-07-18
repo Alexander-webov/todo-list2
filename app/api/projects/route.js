@@ -4,6 +4,11 @@ import { RU_SOURCES, INT_SOURCES } from '@/lib/parsers/index';
 import { categoriesForRole } from '@/lib/roles';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+// Кэш ответов ленты в памяти — режет egress: одинаковые запросы не бьют по базе.
+const _cache = new Map();
+const _CACHE_TTL = 5 * 60 * 1000;
 
 export async function GET(request) {
   try {
@@ -32,12 +37,19 @@ export async function GET(request) {
     const since    = searchParams.get('since');
     const region   = searchParams.get('region'); // 'ru' | 'int'
 
+    // Ключ кэша из всех параметров запроса
+    const _key = JSON.stringify({ page, limit, source, category, role, search, since, region });
+    const _hit = _cache.get(_key);
+    if (_hit && Date.now() - _hit.at < _CACHE_TTL) {
+      return NextResponse.json(_hit.body);
+    }
+
     const db   = supabaseAdmin();
     const from = (page - 1) * limit;
 
     let query = db
       .from('projects')
-      .select('*', { count: 'planned' })
+      .select('id, source, title, description, budget_min, budget_max, currency, category, tags, url, referral_url, published_at, created_at', { count: 'planned' })
       .order('published_at', { ascending: false, nullsFirst: false })
       .order('created_at', { ascending: false })
       .range(from, from + limit - 1);
@@ -76,13 +88,24 @@ export async function GET(request) {
       );
     }
 
-    return NextResponse.json({
-      projects: data || [],
+    // Обрезаем описания — карточка показывает только превью, а полный текст раздувает egress.
+    const trimmed = (data || []).map((p) =>
+      p.description && p.description.length > 300
+        ? { ...p, description: p.description.slice(0, 300) }
+        : p
+    );
+
+    const body = {
+      projects: trimmed,
       total:    count || 0,
       page,
       limit,
       pages:    Math.ceil((count || 0) / limit),
-    });
+    };
+
+    _cache.set(_key, { at: Date.now(), body });
+    if (_cache.size > 300) _cache.clear(); // простая защита от разрастания
+    return NextResponse.json(body);
   } catch (e) {
     // Any uncaught exception — log it and return a parseable response so the
     // client doesn't blow up trying to .json() an HTML error page.

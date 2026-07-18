@@ -4,7 +4,7 @@ import styles from './admin.module.css';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
-const TABS = ['stats', 'articles', 'premium', 'telegram'];
+const TABS = ['stats', 'articles', 'premium'];
 
 export function AdminClient({ gifts, totalUsers, premiumUsers }) {
   const [tab, setTab] = useState('stats');
@@ -17,10 +17,6 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
   const [result, setResult] = useState(null);
 
   // Webhook state
-  const [webhookUrl, setWebhookUrl] = useState('');
-  const [webhookLoading, setWebhookLoading] = useState(false);
-  const [webhookResult, setWebhookResult] = useState(null);
-  const [webhookInfo, setWebhookInfo] = useState(null);
 
   // Blog state
   const [articles, setArticles] = useState([]);
@@ -177,30 +173,6 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
     finally { setLoading(false); }
   }
 
-  async function registerWebhook(e) {
-    e.preventDefault();
-    setWebhookLoading(true); setWebhookResult(null);
-    try {
-      const res = await fetch('/api/admin/telegram-webhook', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ webhookUrl: webhookUrl.replace(/\/$/, '') }),
-      });
-      setWebhookResult(await res.json());
-    } catch { setWebhookResult({ ok: false, description: 'Ошибка соединения' }); }
-    finally { setWebhookLoading(false); }
-  }
-
-  async function checkWebhook() {
-    setWebhookLoading(true);
-    try {
-      const res = await fetch('/api/admin/telegram-webhook');
-      const data = await res.json();
-      setWebhookInfo(data.result || data);
-    } catch { setWebhookInfo({ error: 'Ошибка' }); }
-    finally { setWebhookLoading(false); }
-  }
-
   return (
     <div className={styles.page}>
       <div className={styles.header}>
@@ -210,7 +182,7 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
 
       {/* Вкладки */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
-        {[['stats','📊 Статистика'],['articles','📝 Статьи'],['ads','📣 Реклама'],['premium','🎁 Премиум'],['telegram','🤖 Telegram']].map(([key, label]) => (
+        {[['stats','📊 Статистика'],['articles','📝 Статьи'],['ads','📣 Реклама'],['premium','🎁 Премиум']].map(([key, label]) => (
           <button key={key} onClick={() => setTab(key)} style={{
             padding: '8px 16px', borderRadius: 8, border: '1px solid var(--border)',
             background: tab === key ? 'var(--accent)' : 'var(--bg-card)',
@@ -396,62 +368,6 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
         </div>
       )}
 
-      {/* Telegram */}
-      {tab === 'telegram' && (
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Управление публикациями</h2>
-          <a href="/admin/telegram-queue" style={{
-            display: 'block', padding: '14px 18px', marginBottom: 24,
-            background: 'var(--bg-card)', border: '1px solid var(--border)',
-            borderRadius: 'var(--radius)', textDecoration: 'none',
-            color: 'var(--text)', fontSize: 14, fontWeight: 600,
-            transition: 'border-color 0.15s',
-          }}>
-            ⚙️ Очередь постинга · лимиты · СТАРТ/СТОП →
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 400, marginTop: 4 }}>
-              Регулировка количества постов в сутки, фильтр качества, статистика
-            </div>
-          </a>
-
-          <h2 className={styles.sectionTitle}>Telegram Bot Webhook</h2>
-          <div className={styles.giftForm}>
-            <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 10 }}>
-              Укажи URL сайта чтобы бот получал сообщения от пользователей.
-            </p>
-            <form onSubmit={registerWebhook} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <input type="url" required placeholder="https://твой-домен.vercel.app"
-                className={styles.input} value={webhookUrl}
-                onChange={e => setWebhookUrl(e.target.value)} />
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button type="submit" className={styles.giftBtn} disabled={webhookLoading} style={{ flex: 1 }}>
-                  {webhookLoading ? '...' : '🔗 Зарегистрировать webhook'}
-                </button>
-                <button type="button" className={styles.giftBtn} disabled={webhookLoading}
-                  onClick={checkWebhook}
-                  style={{ flex: 1, background: 'var(--border)', color: 'var(--text-muted)' }}>
-                  📋 Проверить статус
-                </button>
-              </div>
-            </form>
-            {webhookResult && (
-              <div className={`${styles.result} ${webhookResult.ok ? styles.resultOk : styles.resultErr}`}>
-                {webhookResult.ok
-                  ? `✅ Webhook зарегистрирован: ${webhookResult.registeredUrl}`
-                  : `❌ ${webhookResult.description || webhookResult.error}`}
-              </div>
-            )}
-            {webhookInfo && (
-              <div className={styles.result} style={{ background: 'var(--border)', color: 'var(--text-muted)' }}>
-                <b>Текущий webhook:</b><br />
-                URL: {webhookInfo.url || 'не задан'}<br />
-                Ожидает: {webhookInfo.pending_update_count ?? '—'}<br />
-                {webhookInfo.last_error_message && `Ошибка: ${webhookInfo.last_error_message}`}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Реклама */}
       {tab === 'ads' && (
         <div>
@@ -467,7 +383,7 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
                   {yandexAdsEnabled ? 'Показывается на сайте' : 'Скрыта на всём сайте'} · применится в течение минуты
                 </span>
               </div>
-              <button onClick={() => { setEditingAd({}); setAdForm({ title: '', description: '', image_url: '', link: '', position: 'telegram', is_active: true, priority: 0, tg_pin_hours: 2, tg_keep_hours: 48 }); }}
+              <button onClick={() => { setEditingAd({}); setAdForm({ title: '', description: '', image_url: '', link: '', position: 'feed', is_active: true, priority: 0, tg_pin_hours: 2, tg_keep_hours: 48 }); }}
                 style={{ padding: '10px 20px', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, marginBottom: 16 }}>
                 + Добавить рекламу
               </button>
@@ -491,21 +407,6 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
                           )}
                         </div>
                         <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                          {(ad.position === 'telegram' || ad.position === 'all') && !ad.tg_posted_at && (
-                            <button onClick={async () => {
-                              if (!confirm(`Опубликовать "${ad.title}" в канал?\nТишина ${ad.tg_pin_hours || 2}ч, удаление через ${ad.tg_keep_hours || 48}ч`)) return;
-                              setAdsLoading(true);
-                              const res = await fetch('/api/admin/ads/publish', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ id: ad.id }),
-                              });
-                              const data = await res.json();
-                              alert(data.ok ? '✅ Опубликовано!' : `❌ ${data.error}`);
-                              loadAds();
-                            }}
-                              style={{ padding: '6px 12px', background: 'rgba(34,197,94,0.15)', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 12, color: '#22c55e', fontWeight: 600 }}>📢 В канал</button>
-                          )}
                           <button onClick={() => { setEditingAd(ad); setAdForm({ title: ad.title, description: ad.description || '', image_url: ad.image_url || '', link: ad.link, position: ad.position, is_active: ad.is_active, priority: ad.priority || 0, tg_pin_hours: ad.tg_pin_hours || 2, tg_keep_hours: ad.tg_keep_hours || 48 }); }}
                             style={{ padding: '6px 12px', background: 'var(--border)', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}>✏️</button>
                           <button onClick={() => deleteAd(ad.id)}
@@ -537,23 +438,12 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
                     className={styles.input} style={{ width: 'auto' }}>
                     <option value="feed">В ленте</option>
                     <option value="sidebar">В сайдбаре</option>
-                    <option value="telegram">В Telegram</option>
                     <option value="all">Везде</option>
                   </select>
                   <label style={{ fontSize: 13 }}>Приоритет:</label>
                   <input type="number" value={adForm.priority} onChange={e => setAdForm({...adForm, priority: parseInt(e.target.value)||0})}
                     className={styles.input} style={{ width: 70 }} />
                 </div>
-                {(adForm.position === 'telegram' || adForm.position === 'all') && (
-                  <div style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'rgba(59,130,246,0.08)', padding: 12, borderRadius: 8 }}>
-                    <label style={{ fontSize: 13 }}>⏸ Тишина (часы):</label>
-                    <input type="number" value={adForm.tg_pin_hours} onChange={e => setAdForm({...adForm, tg_pin_hours: parseInt(e.target.value)||2})}
-                      className={styles.input} style={{ width: 60 }} min="0" />
-                    <label style={{ fontSize: 13 }}>🗑 Удалить через (часы):</label>
-                    <input type="number" value={adForm.tg_keep_hours} onChange={e => setAdForm({...adForm, tg_keep_hours: parseInt(e.target.value)||48})}
-                      className={styles.input} style={{ width: 60 }} min="0" />
-                  </div>
-                )}
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, cursor: 'pointer' }}>
                   <input type="checkbox" checked={adForm.is_active} onChange={e => setAdForm({...adForm, is_active: e.target.checked})} />
                   Активно

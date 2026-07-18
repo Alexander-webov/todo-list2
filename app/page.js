@@ -10,6 +10,10 @@ import { categoriesForRole } from '@/lib/roles';
 
 export const revalidate = 0;
 
+// Кэш стартовой ленты в памяти — режет egress на каждом заходе.
+const _homeCache = new Map();
+const _HOME_TTL = 5 * 60 * 1000;
+
 export const metadata = {
   alternates: {
     canonical: 'https://allfreelancershere.ru',
@@ -17,10 +21,14 @@ export const metadata = {
 };
 
 async function getInitialProjects({ role, region }) {
+  const _key = JSON.stringify({ role: role || null, region: region || null });
+  const _hit = _homeCache.get(_key);
+  if (_hit && Date.now() - _hit.at < _HOME_TTL) return _hit.val;
+
   const db = supabaseAdmin();
   let query = db
     .from('projects')
-    .select('*', { count: 'planned' })
+    .select('id, source, title, description, budget_min, budget_max, currency, category, tags, url, referral_url, published_at, created_at', { count: 'planned' })
     .order('published_at', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
     .limit(20);
@@ -38,7 +46,15 @@ async function getInitialProjects({ role, region }) {
   }
 
   const { data, count } = await query;
-  return { projects: data || [], total: count || 0 };
+  const projects = (data || []).map((pr) =>
+    pr.description && pr.description.length > 300
+      ? { ...pr, description: pr.description.slice(0, 300) }
+      : pr
+  );
+  const val = { projects, total: count || 0 };
+  _homeCache.set(_key, { at: Date.now(), val });
+  if (_homeCache.size > 50) _homeCache.clear();
+  return val;
 }
 
 async function getStats() {
