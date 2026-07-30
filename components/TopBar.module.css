@@ -60,6 +60,35 @@
   margin-left: auto;
 }
 
+.regionTabs {
+  display: flex;
+  gap: 6px;
+}
+
+.regionTab {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(206, 215, 231, 0.82);
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.regionTab:hover {
+  border-color: rgba(96, 165, 250, 0.9);
+}
+
+.regionTabActive {
+  background: linear-gradient(135deg, #3b82f6, #4f8cff);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
 .toggleWrap {
   display: inline-flex;
   align-items: center;
@@ -184,12 +213,19 @@
   }
 
   .toggleWrap,
+  .regionTabs,
   .searchForm {
     width: 100%;
   }
 
-  .toggleWrap {
+  .toggleWrap,
+  .regionTabs {
     justify-content: space-between;
+  }
+
+  .regionTab {
+    flex: 1;
+    text-align: center;
   }
 
   .searchForm {

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { VacancyCard } from './VacancyCard';
 import { PremiumGate } from './PremiumGate';
 import { VACANCY_CATEGORIES, VACANCY_CATEGORY_EMOJI } from '@/lib/vacancyCategories';
@@ -14,25 +14,32 @@ export function VacanciesFeed({ isLoggedIn = false, profile = null }) {
   const [vacancies, setVacancies] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  // Счётчик запросов — чтобы ответ на устаревший fetch (например, если
+  // пользователь быстро переключил вкладку/категорию) не перезаписал
+  // состояние поверх более свежего запроса, который мог вернуться раньше.
+  const requestId = useRef(0);
 
   const isPremium = !!profile?.is_premium && (
     !profile?.premium_until || new Date(profile.premium_until) > new Date()
   );
 
   const load = useCallback(async () => {
+    const myId = ++requestId.current;
     setLoading(true);
     try {
       const params = new URLSearchParams({ region, limit: '30' });
       if (category) params.set('category', category);
       const res = await fetch(`/api/vacancies?${params.toString()}`);
       const data = await res.json();
+      if (myId !== requestId.current) return; // пришёл устаревший ответ — игнорируем
       setVacancies(data.vacancies || []);
       setTotal(data.total || 0);
     } catch {
+      if (myId !== requestId.current) return;
       setVacancies([]);
       setTotal(0);
     } finally {
-      setLoading(false);
+      if (myId === requestId.current) setLoading(false);
     }
   }, [region, category]);
 

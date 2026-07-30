@@ -8,16 +8,15 @@ export function TopBar({ total = 0, todayCount = 0 }) {
   const params = useSearchParams();
   const [value, setValue] = useState(params.get('search') || '');
 
-  const region = params.get('region') || 'ru';
-  const onlyRu = region === 'ru';
+  // 'ru' — только российские биржи, 'int' — только зарубежные (без РФ).
+  const region = params.get('region') === 'int' ? 'int' : 'ru';
 
-  function toggleRegion() {
-    const next = new URLSearchParams(params.toString());
-    if (onlyRu) next.set('region', 'all');
-    else next.set('region', 'ru');
-    next.delete('source');
-    next.delete('page');
-    router.push(`/?${next.toString()}`);
+  function setRegion(next) {
+    const nextParams = new URLSearchParams(params.toString());
+    nextParams.set('region', next);
+    nextParams.delete('source');
+    nextParams.delete('page');
+    router.push(`/?${nextParams.toString()}`);
   }
 
   function handleSubmit(e) {
@@ -42,24 +41,26 @@ export function TopBar({ total = 0, todayCount = 0 }) {
       </div>
 
       <div className={styles.controls}>
-        <label className={styles.toggleWrap}>
-          <span className={styles.toggleLabel}>Показывать только РФ</span>
-          <span
-            className={`${styles.toggle} ${onlyRu ? styles.toggleOn : ''}`}
-            onClick={toggleRegion}
-            role="switch"
-            aria-checked={onlyRu}
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleRegion();
-              }
-            }}
+        <div className={styles.regionTabs} role="tablist" aria-label="Регион бирж">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={region === 'ru'}
+            className={`${styles.regionTab} ${region === 'ru' ? styles.regionTabActive : ''}`}
+            onClick={() => setRegion('ru')}
           >
-            <span className={styles.toggleDot} />
-          </span>
-        </label>
+            🇷🇺 Россия
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={region === 'int'}
+            className={`${styles.regionTab} ${region === 'int' ? styles.regionTabActive : ''}`}
+            onClick={() => setRegion('int')}
+          >
+            🌍 Весь мир
+          </button>
+        </div>
 
         <form className={styles.searchForm} onSubmit={handleSubmit}>
           <span className={styles.searchIcon}>⌕</span>
