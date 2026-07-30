@@ -13,6 +13,10 @@ const SOURCE_SLUGS = [
 const ROLE_SLUGS = [
   'designer', 'videomaker', 'developer', 'smm', 'other',
 ];
+const VACANCY_CATEGORY_SLUGS = [
+  'bez-navykov', 'dizajn', 'frontend', 'backend', 'smm',
+  'videomontazh', 'podderzhka', 'marketing', 'menedzhment',
+];
 
 const BLOG_SLUGS = ARTICLE_SLUGS;
 
@@ -41,6 +45,8 @@ export default async function sitemap() {
     { url: `${SITE_URL}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${SITE_URL}/partners`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${SITE_URL}/faq`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${SITE_URL}/remote-work`, lastModified: new Date(), changeFrequency: 'hourly', priority: 0.95 },
+    ...VACANCY_CATEGORY_SLUGS.map(slug => ({ url: `${SITE_URL}/remote-work/${slug}`, lastModified: new Date(), changeFrequency: 'hourly', priority: 0.9 })),
     ...CATEGORY_SLUGS.map(slug => ({ url: `${SITE_URL}/category/${slug}`, lastModified: new Date(), changeFrequency: 'hourly', priority: 0.9 })),
     ...ROLE_SLUGS.map(slug => ({ url: `${SITE_URL}/for/${slug}`, lastModified: new Date(), changeFrequency: 'hourly', priority: 0.95 })),
     ...SOURCE_SLUGS.map(slug => ({ url: `${SITE_URL}/source/${slug}`, lastModified: new Date(), changeFrequency: 'hourly', priority: 0.9 })),

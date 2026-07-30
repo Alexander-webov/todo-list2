@@ -6,6 +6,7 @@ import styles from './Header.module.css';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Проекты' },
+  { href: '/remote-work', label: 'Удалённая работа' },
   { href: '/partners', label: 'Все биржи' },
   { href: '/blog', label: 'Блог' },
   { href: '/faq', label: 'FAQ' },

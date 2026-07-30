@@ -1,0 +1,68 @@
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.catNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.catLink {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-bright);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.catLink:hover { border-color: var(--accent); }
+
+.catLinkActive {
+  background: rgba(59, 130, 246, 0.14);
+  border-color: var(--accent);
+  color: var(--accent-hover);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.empty {
+  padding: 32px 0;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+.ctaRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.ctaSecondary {
+  background: var(--bg-card);
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: border-color 0.15s;
+}
+.ctaSecondary:hover { border-color: var(--accent); }
