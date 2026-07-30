@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { href: '/faq', label: 'FAQ' },
 ];
 
-export function HeaderClient({ user, isAdmin }) {
+export function HeaderClient({ user, isAdmin, isPremium = false }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
@@ -77,6 +77,17 @@ export function HeaderClient({ user, isAdmin }) {
         </nav>
 
         <div className={styles.actions}>
+          {!isPremium && (
+            <a
+              href="/pricing"
+              className={`${styles.btnPremium} ${pathname?.startsWith('/pricing') ? styles.btnPremiumActive : ''}`}
+            >
+              ⚡ Премиум
+            </a>
+          )}
+          {isPremium && (
+            <a href="/pricing" className={styles.premiumBadge}>✓ Премиум активен</a>
+          )}
           {user ? (
             <>
               <a href="/settings" className={styles.settingsLink}>🎯 Настройка</a>

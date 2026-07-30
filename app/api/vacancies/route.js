@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { RU_VACANCY_SOURCES, WORLD_VACANCY_SOURCES } from '@/lib/parsers/vacancies/index';
+import { createTTLCache } from '@/lib/simpleCache';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const _cache = new Map();
-const _CACHE_TTL = 5 * 60 * 1000;
+const _cache = createTTLCache(5 * 60 * 1000, 300);
 
 export async function GET(request) {
   try {
@@ -29,8 +29,8 @@ export async function GET(request) {
 
     const _key = JSON.stringify({ page, limit, source, category, search, since, region });
     const _hit = _cache.get(_key);
-    if (_hit && Date.now() - _hit.at < _CACHE_TTL) {
-      return NextResponse.json(_hit.body);
+    if (_hit) {
+      return NextResponse.json(_hit);
     }
 
     const db   = supabaseAdmin();
@@ -73,7 +73,7 @@ export async function GET(request) {
       pages: Math.ceil((count || 0) / limit),
     };
 
-    _cache.set(_key, { at: Date.now(), body });
+    _cache.set(_key, body);
     return NextResponse.json(body);
   } catch (err) {
     console.error('[api/vacancies] Необработанная ошибка:', err);

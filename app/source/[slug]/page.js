@@ -44,6 +44,15 @@ const SOURCES = {
     about: 'Freelance.ru — российская фриланс-биржа с широким выбором проектов по всем направлениям.',
     keywords: 'Freelance.ru заказы, фриланс биржа, проекты Freelance.ru',
   },
+  'youdo': {
+    name: 'Youdo',
+    key: 'youdo',
+    emoji: '🇷🇺',
+    color: '#7c3aed',
+    description: 'Все актуальные задания с Youdo в одном месте. Обновляется каждую минуту.',
+    about: 'Youdo — российский сервис для поиска исполнителей на разовые задачи и небольшие проекты: от бытовых услуг до digital-задач.',
+    keywords: 'Youdo заказы, фриланс Youdo, задания Youdo, биржа Youdo',
+  },
   'upwork': {
     name: 'Upwork',
     key: 'upwork',

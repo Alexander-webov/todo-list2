@@ -7,12 +7,12 @@ import { RightSidebar } from '@/components/RightSidebar2';
 import { TopBar } from '@/components/TopBar';
 import { RU_SOURCES, INT_SOURCES } from '@/lib/parsers/index';
 import { categoriesForRole } from '@/lib/roles';
+import { createTTLCache } from '@/lib/simpleCache';
 
 export const revalidate = 0;
 
 // Кэш стартовой ленты в памяти — режет egress на каждом заходе.
-const _homeCache = new Map();
-const _HOME_TTL = 5 * 60 * 1000;
+const _homeCache = createTTLCache(5 * 60 * 1000, 50);
 
 export const metadata = {
   alternates: {
@@ -23,7 +23,7 @@ export const metadata = {
 async function getInitialProjects({ role, region }) {
   const _key = JSON.stringify({ role: role || null, region: region || null });
   const _hit = _homeCache.get(_key);
-  if (_hit && Date.now() - _hit.at < _HOME_TTL) return _hit.val;
+  if (_hit) return _hit;
 
   const db = supabaseAdmin();
   let query = db
@@ -52,8 +52,7 @@ async function getInitialProjects({ role, region }) {
       : pr
   );
   const val = { projects, total: count || 0 };
-  _homeCache.set(_key, { at: Date.now(), val });
-  if (_homeCache.size > 50) _homeCache.clear();
+  _homeCache.set(_key, val);
   return val;
 }
 

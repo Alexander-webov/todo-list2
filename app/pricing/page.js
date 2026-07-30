@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import styles from './pricing.module.css';
 import { getPrice, DISCOUNT_ACTIVE, DISCOUNT_PERCENT } from '@/lib/pricing';
+import { PremiumQuiz } from '@/components/PremiumQuiz';
 
 const RU = getPrice('ru');
 const INT = getPrice('int');
@@ -113,6 +114,8 @@ export default function PricingPage() {
         </div>
       )}
 
+      {!isPremium && <PremiumQuiz />}
+
       <div className={styles.features}>
         {[
           { icon: '🚀', text: 'Все заказы со всех бирж — без лимита' },
@@ -129,7 +132,7 @@ export default function PricingPage() {
         ))}
       </div>
 
-      <div className={styles.plans}>
+      <div className={styles.plans} id="plans">
         {/* RU тариф */}
         <div className={styles.plan}>
           <div className={styles.planHeader}>

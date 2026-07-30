@@ -8,7 +8,8 @@ const CATEGORY_SLUGS = [
   'smm','parsing','verstka','frontend','backend',
 ];
 const SOURCE_SLUGS = [
-  'upwork','peopleperhour','guru',
+  'fl-ru', 'kwork', 'freelanceru', 'youdo',
+  'freelancer', 'peopleperhour', 'guru',
 ];
 const ROLE_SLUGS = [
   'designer', 'videomaker', 'developer', 'smm', 'other',
