@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { ROLE_SEO, ROLES, roleSeoBySlug, categoriesForRole } from '@/lib/roles';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
+import { getCurrentUser } from '@/lib/auth';
 import styles from './role.module.css';
 import Link from 'next/link';
 import { format } from 'date-fns';
@@ -46,6 +47,7 @@ export default async function RolePage({ params }) {
   const role = roleSeoBySlug(params.role);
   if (!role) notFound();
 
+  const { user } = await getCurrentUser();
   const db = supabaseAdmin();
   const cats = categoriesForRole(role.key);
 
@@ -149,16 +151,18 @@ export default async function RolePage({ params }) {
         </section>
 
         {/* Финальный CTA */}
-        <section className={styles.cta}>
-          <h2>Получай новые заказы первым</h2>
-          <p>
-            Подключи уведомления в Telegram — новые заказы для {role.label.toLowerCase()}
-            {'а'} приходят сразу как появляются на биржах. Откликайся пока нет конкуренции.
-          </p>
-          <Link href="/register" className={styles.ctaBtn}>
-            Зарегистрироваться бесплатно →
-          </Link>
-        </section>
+        {!user && (
+          <section className={styles.cta}>
+            <h2>Получай новые заказы первым</h2>
+            <p>
+              Подключи уведомления в Telegram — новые заказы для {role.label.toLowerCase()}
+              {'а'} приходят сразу как появляются на биржах. Откликайся пока нет конкуренции.
+            </p>
+            <Link href="/register" className={styles.ctaBtn}>
+              Зарегистрироваться бесплатно →
+            </Link>
+          </section>
+        )}
       </div>
     </div>
   );

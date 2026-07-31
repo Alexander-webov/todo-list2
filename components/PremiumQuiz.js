@@ -144,7 +144,7 @@ export function PremiumQuiz() {
           <h2 className={styles.resultTitle}>Пока ты неплохо справляешься вручную</h2>
           <p className={styles.resultText}>
             Но {hoursWasted > 0 ? `~${hoursWasted} часов в месяц` : 'время'} на ручной поиск
-            премиум забирает на себя — плюс AI-отклики и уведомления в Telegram, чтобы
+            премиум забирает на себя — плюс уведомления в Telegram, чтобы
             не проверять биржи самому.
           </p>
         </>

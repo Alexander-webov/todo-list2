@@ -65,6 +65,10 @@ export function ProfileSettings({ profile, onSave }) {
   const [sources, setSources] = useState(profile?.preferred_sources || []);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [chatId, setChatId] = useState('');
+  const [tgConnected, setTgConnected] = useState(!!profile?.telegram_chat_id);
+  const [tgConnecting, setTgConnecting] = useState(false);
+  const [tgError, setTgError] = useState('');
 
   function toggleCategory(cat) {
     setCategories(prev =>
@@ -95,6 +99,12 @@ export function ProfileSettings({ profile, onSave }) {
       min_budget: minBudget,
       filter_categories: categories,
       preferred_sources: sources,
+      // Те же данные под именами, которые читает Telegram-рассылка
+      // (lib/telegram.js) — раньше писались только preferred_sources/keywords,
+      // а рассылка читает filter_sources/filter_keywords, из-за чего
+      // фильтрация по биржам и ключевым словам в уведомлениях никогда не работала.
+      filter_sources: sources,
+      filter_keywords: keywords,
     }).eq('id', user.id);
 
     // Сбрасываем dismissed чтобы новая роль применилась при следующем заходе
@@ -104,6 +114,27 @@ export function ProfileSettings({ profile, onSave }) {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
     if (onSave) onSave({ user_role: userRole, skills, keywords, excluded_keywords: excluded, min_budget: minBudget, filter_categories: categories, preferred_sources: sources });
+  }
+
+  async function connectTelegram() {
+    const id = chatId.trim();
+    if (!id) { setTgError('Вставь Chat ID из бота'); return; }
+    setTgConnecting(true);
+    setTgError('');
+    try {
+      const res = await fetch('/api/telegram/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: id }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setTgError(data.error || 'Не удалось подключить'); return; }
+      setTgConnected(true);
+    } catch {
+      setTgError('Ошибка соединения');
+    } finally {
+      setTgConnecting(false);
+    }
   }
 
   return (
@@ -186,6 +217,34 @@ export function ProfileSettings({ profile, onSave }) {
         <label className={styles.label}>Стоп-слова</label>
         <p className={styles.hint}>Проекты с этими словами получат 0% совпадения</p>
         <TagInput value={excluded} onChange={setExcluded} placeholder="звонки, колл-центр..." />
+      </div>
+
+      <div className={styles.section}>
+        <label className={styles.label}>🔔 Уведомления в Telegram</label>
+        {tgConnected ? (
+          <p className={styles.hint} style={{ color: 'var(--green)' }}>
+            ✓ Telegram подключён — новые проекты по твоим фильтрам выше будут приходить в личные сообщения
+          </p>
+        ) : (
+          <>
+            <p className={styles.hint}>
+              1. Открой бота <a href="https://t.me/allfreelancershere_bot" target="_blank" rel="noopener noreferrer">@allfreelancershere_bot</a> и нажми Start<br />
+              2. Бот пришлёт тебе Chat ID — скопируй и вставь сюда
+            </p>
+            <div className={styles.tagRow}>
+              <input
+                className={styles.input}
+                value={chatId}
+                onChange={e => setChatId(e.target.value)}
+                placeholder="Например: 123456789"
+              />
+              <button className={styles.tagAdd} onClick={connectTelegram} disabled={tgConnecting} style={{ width: 'auto', padding: '0 16px' }}>
+                {tgConnecting ? '...' : 'Подключить'}
+              </button>
+            </div>
+            {tgError && <p className={styles.hint} style={{ color: '#ef4444' }}>{tgError}</p>}
+          </>
+        )}
       </div>
 
       <button className={styles.saveBtn} onClick={handleSave} disabled={saving}>

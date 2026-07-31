@@ -1,6 +1,7 @@
 import { getCurrentUser } from '@/lib/auth';
 import { Header } from '@/components/Header';
 import { VacanciesFeed } from '@/components/VacanciesFeed';
+import { FeaturePromoCard } from '@/components/FeaturePromoCard';
 import styles from './remote-work.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -25,6 +26,15 @@ export default async function RemoteWorkPage() {
             по всему миру — в одной ленте, с разбивкой по категориям.
           </p>
         </div>
+
+        <FeaturePromoCard
+          icon="📄"
+          title="Готово резюме под эту вакансию?"
+          text="Собери за 5 минут под Россию или США/Европу — с AI-подсказками по каждому разделу."
+          ctaText="Собрать резюме"
+          ctaHref="/resume-builder"
+          accent="blue"
+        />
 
         <VacanciesFeed isLoggedIn={!!user} profile={profile} />
       </div>

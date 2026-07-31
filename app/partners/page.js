@@ -1,4 +1,5 @@
 import { PARTNER_LINKS } from '@/lib/referrals';
+import { getCurrentUser } from '@/lib/auth';
 import styles from './partners.module.css';
 
 export const metadata = {
@@ -9,7 +10,9 @@ export const metadata = {
   },
 };
 
-export default function PartnersPage() {
+export default async function PartnersPage() {
+  const { user } = await getCurrentUser();
+
   return (
     <div className={styles.page}>
       <a href="/" className={styles.back}>← На главную</a>
@@ -38,11 +41,13 @@ export default function PartnersPage() {
         ))}
       </div>
 
-      <div className={styles.promo}>
-        <h2>Уже зарегистрирован на биржах?</h2>
-        <p>Подключи FreelancersHere и получай все проекты в одном месте + уведомления в Telegram.</p>
-        <a href="/register" className={styles.promoBtn}>Зарегистрироваться бесплатно</a>
-      </div>
+      {!user && (
+        <div className={styles.promo}>
+          <h2>Уже зарегистрирован на биржах?</h2>
+          <p>Подключи FreelancersHere и получай все проекты в одном месте + уведомления в Telegram.</p>
+          <a href="/register" className={styles.promoBtn}>Зарегистрироваться бесплатно</a>
+        </div>
+      )}
     </div>
   );
 }

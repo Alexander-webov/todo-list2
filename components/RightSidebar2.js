@@ -5,6 +5,7 @@ import adStyles from './AdSlot.module.css';
 import { YandexAdSlot } from './AdSlot';
 import { ArticleOfDay } from './ArticleOfDay';
 import { DonationBanner } from './DonationBanner';
+import { FeaturePromoCard } from './FeaturePromoCard';
 
 export function RightSidebar() {
   const [sidebarAd, setSidebarAd] = useState(null);
@@ -18,6 +19,15 @@ export function RightSidebar() {
 
   return (
     <aside className={styles.rightSidebar} >
+      <FeaturePromoCard
+        icon="✨"
+        title="Не знаешь, что написать заказчику?"
+        text="AI сгенерирует живой отклик под конкретный проект за 10 секунд. Первая генерация бесплатно."
+        ctaText="Попробовать"
+        ctaHref="/ai-response"
+        accent="purple"
+      />
+
       {/* Telegram-каналы */}
       <div className={styles.section}>
         <p className={styles.sectionTitle}>📢 Telegram-каналы</p>

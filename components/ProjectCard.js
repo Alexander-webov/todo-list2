@@ -50,6 +50,8 @@ export function ProjectCard({ project, profile, style }) {
   const [sending, setSending] = useState(false);
   const [sendDone, setSendDone] = useState(false);
   const [cooldownUntil, setCooldownUntil] = useState(0);
+  const [needsCredits, setNeedsCredits] = useState(false);
+  const [buyLoading, setBuyLoading] = useState('');
 
   const meta = SOURCE_META[project.source] || { name: project.source, color: '#6b7a99', flag: '🌐' };
   const budget = formatBudget(project.budget_min, project.budget_max, project.currency);
@@ -57,10 +59,6 @@ export function ProjectCard({ project, profile, style }) {
 
   const matchPct = profile ? calcMatch(project, profile) : null;
   const matchInfo = matchPct !== null ? getMatchLabel(matchPct) : null;
-
-  const isPremium = !!profile?.is_premium && (
-    !profile?.premium_until || new Date(profile.premium_until) > new Date()
-  );
 
   const dateForFresh = project.published_at || project.created_at;
   const fresh = isFreshProject(dateForFresh);
@@ -77,6 +75,7 @@ export function ProjectCard({ project, profile, style }) {
 
     setModal(true);
     setSendDone(false);
+    setNeedsCredits(false);
     if (response && !response.startsWith('Лимит AI') && !response.startsWith('AI сервис')) return;
 
     setLoading(true);
@@ -91,10 +90,9 @@ export function ProjectCard({ project, profile, style }) {
 
       const data = await res.json().catch(() => ({}));
 
-      if (res.status === 402 || data.premium_required) {
-        setModal(false);
+      if (res.status === 402 || data.credits_required) {
         setLoading(false);
-        window.location.href = '/pricing?from=ai';
+        setNeedsCredits(true);
         return;
       }
 
@@ -125,6 +123,23 @@ export function ProjectCard({ project, profile, style }) {
     setTimeout(() => setCopied(false), 2000);
   }
 
+  async function buyCredits(pack) {
+    setBuyLoading(pack);
+    try {
+      const res = await fetch('/api/payment/yookassa/create-credits', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pack }),
+      });
+      const data = await res.json();
+      const redirectUrl = data.confirmation_url || data.url;
+      if (redirectUrl) window.location.href = redirectUrl;
+      else setBuyLoading('');
+    } catch {
+      setBuyLoading('');
+    }
+  }
+
   async function sendResponse() {
     setSending(true);
     try { await navigator.clipboard.writeText(response); } catch (_) { }
@@ -142,9 +157,8 @@ export function ProjectCard({ project, profile, style }) {
     if (e.target === e.currentTarget) setModal(false);
   }
 
-  function handleAiClick(e) {
-    if (!isPremium) return; // ссылка на /pricing сработает сама
-    e.preventDefault();
+  function handleAiClick() {
+    setModal(true);
     generateResponse();
   }
 
@@ -215,7 +229,9 @@ export function ProjectCard({ project, profile, style }) {
           )}
 
           <div className={styles.actions}>
-            {/* AI-отклик отключён. Всем показываем прямой переход к проекту. */}
+            <button className={styles.aiBtn} onClick={handleAiClick}>
+              ✨ AI отклик
+            </button>
             <GoToProjectButton
               projectId={project.id}
               url={url}
@@ -245,7 +261,20 @@ export function ProjectCard({ project, profile, style }) {
               <p className={styles.modalProjectTitle}>{project.title}</p>
             </div>
             <div className={styles.modalBody}>
-              {loading ? (
+              {needsCredits ? (
+                <div className={styles.buyCreditsBox}>
+                  <p className={styles.buyCreditsTitle}>Бесплатная генерация уже использована</p>
+                  <p className={styles.buyCreditsText}>Пополни баланс — 10 генераций за 99 ₽ или 100 за 499 ₽</p>
+                  <div className={styles.buyCreditsPacks}>
+                    <button className={styles.buyCreditsPack} onClick={() => buyCredits('10')} disabled={!!buyLoading}>
+                      {buyLoading === '10' ? '...' : <><b>10</b> генераций — 99 ₽</>}
+                    </button>
+                    <button className={styles.buyCreditsPack} onClick={() => buyCredits('100')} disabled={!!buyLoading}>
+                      {buyLoading === '100' ? '...' : <><b>100</b> генераций — 499 ₽</>}
+                    </button>
+                  </div>
+                </div>
+              ) : loading ? (
                 <div className={styles.generating}>
                   <div className={styles.genDots}>
                     {[0, 1, 2].map(i => <span key={i} className={styles.genDot} style={{ animationDelay: `${i * 0.2}s` }} />)}
@@ -256,7 +285,7 @@ export function ProjectCard({ project, profile, style }) {
                 <textarea className={styles.responseText} value={response} onChange={e => setResponse(e.target.value)} rows={10} />
               )}
             </div>
-            {!loading && response && (
+            {!needsCredits && !loading && response && (
               <div className={styles.modalFooter}>
                 <div className={styles.modalActions}>
                   <button className={styles.copyBtn} onClick={copyText}>

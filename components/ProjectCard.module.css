@@ -411,6 +411,44 @@
   border-color: rgba(96, 165, 250, 0.6);
 }
 
+.buyCreditsBox {
+  text-align: center;
+  padding: 20px 8px;
+}
+
+.buyCreditsTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.buyCreditsText {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.buyCreditsPacks {
+  display: flex;
+  gap: 10px;
+}
+
+.buyCreditsPack {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border-bright);
+  border-radius: 12px;
+  padding: 14px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.buyCreditsPack:hover { border-color: var(--accent); }
+.buyCreditsPack b { display: block; font-size: 17px; margin-bottom: 2px; }
+
 .generating {
   display: flex;
   flex-direction: column;

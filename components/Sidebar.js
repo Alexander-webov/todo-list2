@@ -322,6 +322,11 @@ export function Sidebar() {
 
       {/* Статья дня */}
       <ArticleOfDay />
+
+      <a href="/partners" className={styles.contactBtn} style={{ display: 'block', textAlign: 'center', marginBottom: 12 }}>
+        🔗 Зарегистрироваться на биржах
+      </a>
+
       <div className={styles.contact}>
         <p>Не нашёл ответ на свой вопрос? programm.aleks@gmail.com</p>
         <a href="mailto:programm.aleks@gmail.com" className={styles.contactBtn}>

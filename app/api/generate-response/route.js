@@ -1,19 +1,18 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
 
-// AI-генерация откликов на Groq (OpenAI-совместимый API, бесплатный тир
-// с щедрым лимитом — этого достаточно для короткого текста отклика,
-// не нужна дорогая топовая модель ради пары абзацев).
-// Раньше фича была отключена целиком (всегда 410), потому что "не хотели
-// платить за AI API" — но сама фича продаётся как часть премиума на
-// /pricing и в PremiumGate, то есть платящие люди покупали то, чего
-// физически не было. Включаем обратно с бесплатным провайдером и
-// собственным рейт-лимитом, чтобы не улететь в деньги при всплеске.
+// AI-генерация откликов на OpenAI (gpt-4.1-mini — дёшево и достаточно для
+// короткого текста отклика, не нужна дорогая топовая модель ради пары
+// абзацев). Раньше был Groq — переключили из-за его лимитов по запросам,
+// у OpenAI на аккаунте уже есть оплаченные кредиты.
+// Отдельная платная фича (кредиты 99₽/10, 499₽/100), не входит в премиум —
+// собственный рейт-лимит, чтобы не улететь в деньги при всплеске.
 
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL = 'llama-3.3-70b-versatile';
+const AI_URL = 'https://api.openai.com/v1/chat/completions';
+const MODEL = 'gpt-4.1-mini';
 
 // Простой rate limit в памяти процесса: не больше 1 генерации в 15 секунд
 // на пользователя. Не переживает рестарт процесса — этого достаточно,
@@ -24,10 +23,10 @@ const RATE_LIMIT_MS = 15000;
 function buildPrompt({ title, description, source, budget }) {
   return `Ты помогаешь фрилансеру написать короткий, живой отклик на проект — без канцелярита и шаблонных фраз вроде "Здравствуйте! Готов выполнить вашу задачу качественно и в срок".
 
-Проект: "${title}"
+Проект: "${title || 'см. описание ниже'}"
 Источник: ${source || 'не указан'}
 Бюджет: ${budget || 'не указан'}
-Описание: ${(description || '').slice(0, 1000)}
+Описание: ${(description || '').slice(0, 2000)}
 
 Напиши отклик на русском языке, 3-5 предложений:
 - Обратись к сути задачи, покажи что реально прочитал описание
@@ -44,11 +43,24 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Нужно войти в аккаунт', premium_required: false }, { status: 401 });
   }
 
-  if (!profile?.is_premium) {
-    return NextResponse.json(
-      { error: 'AI-отклики доступны с премиумом', premium_required: true },
-      { status: 402 }
-    );
+  const db = supabaseAdmin();
+
+  // AI-отклики — отдельная платная фича, НЕ входит в обычный премиум
+  // (явное решение: премиум и AI-кредиты монетизируются раздельно).
+  // Всем, включая премиум-пользователей: 1 бесплатная генерация, дальше —
+  // платный баланс кредитов (см. /ai-response и .../create-credits).
+  let useCredit = false;
+  if (profile?.ai_free_used) {
+    if (!profile?.ai_credits || profile.ai_credits < 1) {
+      return NextResponse.json(
+        {
+          error: 'Бесплатная генерация уже использована. Купи кредиты для AI-откликов.',
+          credits_required: true,
+        },
+        { status: 402 }
+      );
+    }
+    useCredit = true;
   }
 
   const now = Date.now();
@@ -61,8 +73,8 @@ export async function POST(request) {
     );
   }
 
-  if (!process.env.GROQ_API_KEY) {
-    console.error('[AI Response] GROQ_API_KEY не настроен');
+  if (!process.env.OPENAI_API_KEY) {
+    console.error('[AI Response] OPENAI_API_KEY не настроен');
     return NextResponse.json(
       { error: 'AI сервис временно недоступен. Можно откликнуться на проект вручную.' },
       { status: 503 }
@@ -77,16 +89,16 @@ export async function POST(request) {
   }
 
   const { title, description, source, budget } = body || {};
-  if (!title) {
-    return NextResponse.json({ error: 'Не хватает данных о проекте' }, { status: 400 });
+  if (!title && !description) {
+    return NextResponse.json({ error: 'Вставь описание вакансии или проекта' }, { status: 400 });
   }
 
   try {
-    const res = await fetch(GROQ_URL, {
+    const res = await fetch(AI_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model: MODEL,
@@ -99,7 +111,7 @@ export async function POST(request) {
 
     if (!res.ok) {
       const errText = await res.text().catch(() => '');
-      console.error(`[AI Response] Groq вернул ${res.status}:`, errText.slice(0, 300));
+      console.error(`[AI Response] OpenAI вернул ${res.status}:`, errText.slice(0, 300));
       return NextResponse.json(
         { error: 'AI сервис временно недоступен. Можно откликнуться на проект вручную.' },
         { status: 503 }
@@ -113,7 +125,25 @@ export async function POST(request) {
     // Не даём Map расти бесконечно у активных сайтов — грубая, но простая защита.
     if (lastCallByUser.size > 5000) lastCallByUser.clear();
 
-    return NextResponse.json({ text });
+    // Списываем только при реальном успехе — если OpenAI не ответил, попытка не в счёт.
+    if (text) {
+      if (useCredit) {
+        await db
+          .from('profiles')
+          .update({ ai_credits: Math.max((profile.ai_credits || 0) - 1, 0) })
+          .eq('id', user.id);
+      } else {
+        await db
+          .from('profiles')
+          .update({ ai_free_used: true })
+          .eq('id', user.id);
+      }
+    }
+
+    return NextResponse.json({
+      text,
+      creditsRemaining: useCredit ? Math.max((profile.ai_credits || 0) - 1, 0) : (profile?.ai_credits || 0),
+    });
   } catch (err) {
     console.error('[AI Response] Ошибка:', err.message);
     return NextResponse.json(

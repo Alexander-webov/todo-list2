@@ -109,8 +109,8 @@ export function PremiumGate({ isLoggedIn = false, totalProjects = 0, context = '
 
         <div className={styles.perks}>
           <span className={styles.perk}>✓ Все {itemWord} со всех источников</span>
-          <span className={styles.perk}>✓ AI-генерация откликов</span>
           <span className={styles.perk}>✓ Уведомления в Telegram</span>
+          <span className={styles.perk}>✓ Единый премиум — фриланс + вакансии</span>
           <span className={styles.perk}>✓ Фильтры по категориям{isVacancies ? '' : ' и стеку'}</span>
         </div>
 

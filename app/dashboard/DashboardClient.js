@@ -49,6 +49,24 @@ export function DashboardClient({ profile, email, payments, paymentStatus }) {
         </Link>
       </div>
 
+      <div className={styles.section}>
+        <Link href="/resume-builder" className={styles.card} style={{ display: 'block', textDecoration: 'none' }}>
+          <div className={styles.row}>
+            <span className={styles.rowLabel}>📄 Конструктор резюме</span>
+            <span className={styles.rowValue}>Открыть →</span>
+          </div>
+        </Link>
+      </div>
+
+      <div className={styles.section}>
+        <Link href="/ai-response" className={styles.card} style={{ display: 'block', textDecoration: 'none' }}>
+          <div className={styles.row}>
+            <span className={styles.rowLabel}>✨ AI-отклики</span>
+            <span className={styles.rowValue}>Открыть →</span>
+          </div>
+        </Link>
+      </div>
+
       {
         payments.length > 0 && (
           <div className={styles.section}>

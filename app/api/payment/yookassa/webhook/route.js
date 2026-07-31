@@ -40,10 +40,30 @@ export async function POST(request) {
       .update({ status: 'succeeded', confirmed_at: new Date().toISOString() })
       .eq('provider_id', payment.id);
 
-    // Активируем премиум на 30 дней
-    await activatePremium(userId, 30);
+    if (payment.metadata?.type === 'ai_credits') {
+      // Разовая покупка кредитов на AI-отклики, не подписка
+      const credits = parseInt(payment.metadata?.credits, 10) || 0;
+      const { data: profile } = await db.from('profiles').select('ai_credits').eq('id', userId).single();
+      await db
+        .from('profiles')
+        .update({ ai_credits: (profile?.ai_credits || 0) + credits })
+        .eq('id', userId);
+      console.log(`[YooKassa] Начислено ${credits} AI-кредитов для ${userId}`);
+    } else if (payment.metadata?.type === 'resume_credits') {
+      // Разовая покупка доп. слотов резюме
+      const slots = parseInt(payment.metadata?.slots, 10) || 0;
+      const { data: profile } = await db.from('profiles').select('resume_credits').eq('id', userId).single();
+      await db
+        .from('profiles')
+        .update({ resume_credits: (profile?.resume_credits || 0) + slots })
+        .eq('id', userId);
+      console.log(`[YooKassa] Начислено ${slots} слотов резюме для ${userId}`);
+    } else {
+      // Активируем премиум на 30 дней
+      await activatePremium(userId, 30);
+      console.log(`[YooKassa] Премиум активирован для ${userId}`);
+    }
 
-    console.log(`[YooKassa] Премиум активирован для ${userId}`);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[YooKassa webhook] Ошибка:', err);

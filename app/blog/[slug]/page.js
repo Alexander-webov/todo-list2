@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
 import styles from './article.module.css';
 import { supabaseAdmin } from '@/lib/supabase';
+import { getCurrentUser } from '@/lib/auth';
 import { ARTICLES, ARTICLE_LIST } from '../articles-data';
 
 export const dynamic = 'force-dynamic';
@@ -52,6 +53,7 @@ function renderContent(content) {
 
 export default async function ArticlePage({ params }) {
   const db = supabaseAdmin();
+  const { user } = await getCurrentUser();
   const { data: dbArticle } = await db
     .from('blog_articles')
     .select('*')
@@ -116,11 +118,13 @@ export default async function ArticlePage({ params }) {
           </div>
         </article>
 
-        <div className={styles.cta}>
-          <h2>Попробуй FreelanceHere бесплатно</h2>
-          <p>Находи заказы со всех бирж в одной ленте. Уведомления в Telegram. 7 дней бесплатно.</p>
-          <a href="/register" className={styles.ctaBtn}>Зарегистрироваться бесплатно</a>
-        </div>
+        {!user && (
+          <div className={styles.cta}>
+            <h2>Попробуй FreelanceHere бесплатно</h2>
+            <p>Находи заказы со всех бирж в одной ленте. Уведомления в Telegram. 7 дней бесплатно.</p>
+            <a href="/register" className={styles.ctaBtn}>Зарегистрироваться бесплатно</a>
+          </div>
+        )}
 
         {related.length > 0 && (
           <div className={styles.related}>

@@ -1,0 +1,33 @@
+.page { min-height: 100vh; background: var(--bg); }
+.container { max-width: 680px; margin: 0 auto; padding: 32px 24px 64px; }
+
+.title { font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; margin-bottom: 6px; }
+.updated { font-size: 12px; color: var(--text-dim); margin-bottom: 28px; }
+
+.section { margin-bottom: 26px; }
+.section h2 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.section p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+.section ul {
+  margin: 0 0 10px;
+  padding-left: 20px;
+}
+.section li {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.section a {
+  color: var(--accent);
+  font-weight: 600;
+}

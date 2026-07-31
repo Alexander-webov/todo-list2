@@ -7,7 +7,6 @@ import styles from './Header.module.css';
 const NAV_ITEMS = [
   { href: '/', label: 'Проекты' },
   { href: '/remote-work', label: 'Удалённая работа' },
-  { href: '/partners', label: 'Все биржи' },
   { href: '/blog', label: 'Блог' },
   { href: '/faq', label: 'FAQ' },
 ];
@@ -15,6 +14,11 @@ const NAV_ITEMS = [
 export function HeaderClient({ user, isAdmin, isPremium = false }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -100,8 +104,44 @@ export function HeaderClient({ user, isAdmin, isPremium = false }) {
               <a href="/login" className={styles.btnPrimary}>Войти</a>
             </>
           )}
+          <button
+            className={styles.mobileMenuBtn}
+            onClick={() => setMobileMenuOpen(v => !v)}
+            aria-label="Меню"
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <nav className={styles.mobileNav}>
+          {NAV_ITEMS.map((item) => {
+            const isActive = item.href === '/'
+              ? pathname === '/'
+              : pathname?.startsWith(item.href);
+
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                className={`${styles.mobileNavLink} ${isActive ? styles.navLinkActive : ''}`}
+              >
+                {item.label}
+              </a>
+            );
+          })}
+          {isAdmin && (
+            <a
+              href="/admin"
+              className={`${styles.mobileNavLink} ${pathname?.startsWith('/admin') ? styles.navLinkActive : ''}`}
+            >
+              Админ
+            </a>
+          )}
+        </nav>
+      )}
     </header>
   );
 }

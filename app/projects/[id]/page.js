@@ -2,6 +2,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { GoToProjectButton } from '@/components/GoToProjectButton';
+import { getCurrentUser } from '@/lib/auth';
 import styles from './project.module.css';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -74,6 +75,7 @@ export async function generateMetadata({ params }) {
 
 export default async function ProjectPage({ params }) {
   const db = supabaseAdmin();
+  const { user } = await getCurrentUser();
   const { data: project } = await db.from('projects').select('*').eq('id', params.id).single();
   if (!project) notFound();
 
@@ -184,11 +186,13 @@ export default async function ProjectPage({ params }) {
           />
         </div>
 
-        {/* Блок для незарегиненных */}
-        <div className={styles.promo}>
-          <p>📬 Хочешь получать такие проекты первым в Telegram?</p>
-          <a href="/register" className={styles.promoBtn}>Зарегистрироваться бесплатно</a>
-        </div>
+        {/* Блок для незарегиненных — раньше показывался всем, включая уже вошедших */}
+        {!user && (
+          <div className={styles.promo}>
+            <p>📬 Хочешь получать такие проекты первым в Telegram?</p>
+            <a href="/register" className={styles.promoBtn}>Зарегистрироваться бесплатно</a>
+          </div>
+        )}
 
         {/* Внутренняя перелинковка */}
         <div className={styles.links}>

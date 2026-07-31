@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 import { supabaseAdmin } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
+import { getCurrentUser } from '@/lib/auth';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -104,6 +105,7 @@ export default async function SourcePage({ params }) {
   const source = SOURCES[params.slug];
   if (!source) notFound();
 
+  const { user } = await getCurrentUser();
   const db = supabaseAdmin();
   const { data: projects, count } = await db
     .from('projects')
@@ -176,11 +178,13 @@ export default async function SourcePage({ params }) {
           ))}
         </div>
 
-        <div className={styles.cta}>
-          <h2>Получай новые заказы с {source.name} первым</h2>
-          <p>Подключи уведомления в Telegram — новые проекты приходят сразу как появляются на {source.name}</p>
-          <a href="/register" className={styles.ctaBtn}>Зарегистрироваться бесплатно</a>
-        </div>
+        {!user && (
+          <div className={styles.cta}>
+            <h2>Получай новые заказы с {source.name} первым</h2>
+            <p>Подключи уведомления в Telegram — новые проекты приходят сразу как появляются на {source.name}</p>
+            <a href="/register" className={styles.ctaBtn}>Зарегистрироваться бесплатно</a>
+          </div>
+        )}
       </div>
     </div>
   );

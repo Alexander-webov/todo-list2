@@ -5,6 +5,7 @@ import { CATEGORY_CONTENT } from '@/lib/category-content';
 import { ARTICLES } from '@/app/blog/articles-data';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
+import { getCurrentUser } from '@/lib/auth';
 import styles from './category.module.css';
 import Link from 'next/link';
 import { format } from 'date-fns';
@@ -41,6 +42,7 @@ export default async function CategoryPage({ params }) {
   const cat = CATEGORY_SEO[params.slug];
   if (!cat) notFound();
 
+  const { user } = await getCurrentUser();
   const content = CATEGORY_CONTENT[params.slug];
 
   const db = supabaseAdmin();
@@ -147,13 +149,15 @@ export default async function CategoryPage({ params }) {
         </div>
 
         {/* CTA для незарегиненных */}
-        <div className={styles.cta}>
-          <h2>Хочешь видеть все заказы первым?</h2>
-          <p>Подключи уведомления в Telegram — новые проекты по {cat.name.toLowerCase()} приходят сразу как появляются</p>
-          <a href="/register" className={styles.ctaBtn}>
-            Зарегистрироваться бесплатно
-          </a>
-        </div>
+        {!user && (
+          <div className={styles.cta}>
+            <h2>Хочешь видеть все заказы первым?</h2>
+            <p>Подключи уведомления в Telegram — новые проекты по {cat.name.toLowerCase()} приходят сразу как появляются</p>
+            <a href="/register" className={styles.ctaBtn}>
+              Зарегистрироваться бесплатно
+            </a>
+          </div>
+        )}
 
         {/* Уникальный контент: про категорию */}
         {content?.intro && (
