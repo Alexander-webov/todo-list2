@@ -41,5 +41,12 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  // /api/ исключён отдельно: миддлварь продлевает сессию браузера
+  // залогиненного юзера, API-роутам это не нужно (каждый сам читает cookie
+  // через getCurrentUser()). Раньше /api/cron/* тоже проходил через эту
+  // миддлварь — а на Netlify она выполняется как Edge Function с гораздо
+  // более жёстким лимитом времени, чем обычная серверная функция. Крон
+  // парсинга стабильно работал 20-30+ секунд — Edge-прослойка обрывала
+  // ожидание с AbortError ещё до завершения реального парсинга.
+  matcher: ['/((?!api/|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
 };
