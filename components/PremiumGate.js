@@ -6,18 +6,26 @@ import { getPrice } from '@/lib/pricing';
 const RU = getPrice('ru');
 const INT = getPrice('int');
 
-export function PremiumGate({ isLoggedIn = false, totalProjects = 0 }) {
+export function PremiumGate({ isLoggedIn = false, totalProjects = 0, context = 'projects' }) {
   const [stats, setStats] = useState(null);
   const [yookassaLoading, setYookassaLoading] = useState(false);
   const [stripeLoading, setStripeLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Компонент используется и на фриланс-ленте, и на /remote-work — тексты
+  // должны отличаться ("проектов" vs "вакансий"), иначе на вакансиях
+  // показывалось бы "5 из 449 проектов", хотя на самом деле это вакансии.
+  const isVacancies = context === 'vacancies';
+  const itemWord = isVacancies ? 'вакансий' : 'проектов';
+  const audienceWord = isVacancies ? 'пользователей' : 'фрилансеров';
+
   useEffect(() => {
+    if (isVacancies) return; // /api/stats считает только таблицу projects, для вакансий это неверные цифры
     fetch('/api/stats')
       .then(r => r.json())
       .then(setStats)
       .catch(() => {});
-  }, []);
+  }, [isVacancies]);
 
   async function payYookassa() {
     if (!isLoggedIn) {
@@ -75,13 +83,15 @@ export function PremiumGate({ isLoggedIn = false, totalProjects = 0 }) {
 
         {/* Социальные триггеры */}
         <div className={styles.triggers}>
-          <div className={styles.trigger}>
-            <span className={styles.triggerFire}>🔥</span>
-            <span>+{projectsToday > 0 ? projectsToday : '...'} новых проектов за последние 24 часа</span>
-          </div>
+          {!isVacancies && (
+            <div className={styles.trigger}>
+              <span className={styles.triggerFire}>🔥</span>
+              <span>+{projectsToday > 0 ? projectsToday : '...'} новых проектов за последние 24 часа</span>
+            </div>
+          )}
           <div className={styles.trigger}>
             <span className={styles.triggerFire}>⚡</span>
-            <span>189 фрилансеров уже смотрят все проекты прямо сейчас</span>
+            <span>189 {audienceWord} уже смотрят все {itemWord} прямо сейчас</span>
           </div>
           <div className={styles.trigger}>
             <span className={styles.triggerFire}>⏱</span>
@@ -91,17 +101,17 @@ export function PremiumGate({ isLoggedIn = false, totalProjects = 0 }) {
 
         <span className={styles.icon}>⚡</span>
         <h2 className={styles.title}>
-          Ты видишь только 5 из {total ? total.toLocaleString('ru') : '...'} проектов
+          Ты видишь только 5 из {total ? total.toLocaleString('ru') : '...'} {itemWord}
         </h2>
         <p className={styles.sub}>
-          Открой полный доступ и находи заказы <strong>первым</strong> — раньше других фрилансеров.
+          Открой полный доступ и находи {isVacancies ? 'вакансии' : 'заказы'} <strong>первым</strong> — раньше других {audienceWord}.
         </p>
 
         <div className={styles.perks}>
-          <span className={styles.perk}>✓ Все проекты со всех бирж</span>
+          <span className={styles.perk}>✓ Все {itemWord} со всех источников</span>
           <span className={styles.perk}>✓ AI-генерация откликов</span>
           <span className={styles.perk}>✓ Уведомления в Telegram</span>
-          <span className={styles.perk}>✓ Фильтры по категориям и стеку</span>
+          <span className={styles.perk}>✓ Фильтры по категориям{isVacancies ? '' : ' и стеку'}</span>
         </div>
 
         {/* Две кнопки оплаты */}
@@ -119,7 +129,7 @@ export function PremiumGate({ isLoggedIn = false, totalProjects = 0 }) {
                     {RU.discountActive && <s style={{opacity:.6,marginRight:6,fontWeight:500}}>{RU.base} ₽</s>}
                     {RU.final} ₽
                   </span>
-                  <span className={styles.payLabel}>YooKassa · карты РФ{RU.discountActive ? ' · −50%' : ''}</span>
+                  <span className={styles.payLabel}>YooKassa · карты РФ{RU.discountActive ? ` · −${RU.discountPercent}%` : ''}</span>
                 </span>
               </>
             )}
@@ -138,7 +148,7 @@ export function PremiumGate({ isLoggedIn = false, totalProjects = 0 }) {
                     {INT.discountActive && <s style={{opacity:.6,marginRight:6,fontWeight:500}}>${INT.base}</s>}
                     ${INT.final}
                   </span>
-                  <span className={styles.payLabel}>Stripe · мировые карты{INT.discountActive ? ' · −50%' : ''}</span>
+                  <span className={styles.payLabel}>Stripe · мировые карты{INT.discountActive ? ` · −${INT.discountPercent}%` : ''}</span>
                 </span>
               </>
             )}

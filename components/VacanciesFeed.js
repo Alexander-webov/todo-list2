@@ -101,7 +101,7 @@ export function VacanciesFeed({ isLoggedIn = false, profile = null }) {
 
       {showGate && (
         isLoggedIn ? (
-          <PremiumGate isLoggedIn={isLoggedIn} totalProjects={total} />
+          <PremiumGate isLoggedIn={isLoggedIn} totalProjects={total} context="vacancies" />
         ) : (
           <div className={styles.registerGate}>
             <div className={styles.registerGateBlur} />
