@@ -12,6 +12,30 @@ const MAX_RUN_MS = 5 * 60 * 1000;
 
 const MAX_PROJECTS = 4500;
 const KEEP_PROJECTS = 2500;
+// Раньше чистка была только по количеству (если проектов < 4500 — не трогаем
+// вообще). Значит объявление месячной давности могло висеть в базе
+// бесконечно, пока общее число не упрётся в лимит. Добавляем отдельную
+// чистку по возрасту — жёсткий потолок независимо от количества.
+// 30 дней — разумный дефолт для фриланс-заказов (могут быть открыты
+// дольше вакансий), можно поменять одной константой.
+const MAX_AGE_DAYS = 30;
+
+async function cleanupByAge() {
+  const db = supabaseAdmin();
+  const cutoff = new Date(Date.now() - MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
+
+  const { error, count: deleted } = await db
+    .from('projects')
+    .delete({ count: 'exact' })
+    .lt('published_at', cutoff);
+
+  if (error) {
+    console.error('[Cleanup by age] Ошибка:', error.message);
+    return 0;
+  }
+  if (deleted) console.log(`[Cleanup by age] Удалено проектов старше ${MAX_AGE_DAYS} дней: ${deleted}`);
+  return deleted || 0;
+}
 
 async function cleanupIfNeeded() {
   const db = supabaseAdmin();
@@ -63,13 +87,14 @@ export async function GET(request) {
   isRunning = true;
   runningSince = Date.now();
   try {
-    const deleted = await cleanupIfNeeded();
+    const deletedByAge = await cleanupByAge();
+    const deletedByCount = await cleanupIfNeeded();
     const added = await runAllParsers();
 
     return NextResponse.json({
       success: true,
       added,
-      deleted,
+      deleted: deletedByAge + deletedByCount,
       timestamp: new Date().toISOString(),
     });
   } catch (err) {

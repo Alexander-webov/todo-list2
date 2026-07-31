@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 import { supabaseAdmin } from '@/lib/supabase';
 import { VACANCY_CATEGORY_SEO } from '@/lib/vacancyCategories';
-import { VACANCY_SOURCES } from '@/lib/parsers/vacancies/index';
+import { VACANCY_SOURCES } from '@/lib/vacancySources';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { VacancyCard } from '@/components/VacancyCard';

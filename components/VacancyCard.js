@@ -3,7 +3,7 @@ import styles from './VacancyCard.module.css';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { VACANCY_CATEGORY_EMOJI } from '@/lib/vacancyCategories';
-import { VACANCY_SOURCES } from '@/lib/parsers/vacancies/index';
+import { VACANCY_SOURCES } from '@/lib/vacancySources';
 
 function formatSalary(min, max, currency) {
   if (!min && !max) return null;

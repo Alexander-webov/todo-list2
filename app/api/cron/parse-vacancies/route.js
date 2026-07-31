@@ -11,6 +11,26 @@ const MAX_RUN_MS = 5 * 60 * 1000;
 
 const MAX_VACANCIES = 4500;
 const KEEP_VACANCIES = 2500;
+// Вакансии устаревают быстрее фриланс-заказов — жёсткий потолок в неделю,
+// независимо от того, сколько их всего в базе.
+const MAX_AGE_DAYS = 7;
+
+async function cleanupByAge() {
+  const db = supabaseAdmin();
+  const cutoff = new Date(Date.now() - MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
+
+  const { error, count: deleted } = await db
+    .from('vacancies')
+    .delete({ count: 'exact' })
+    .lt('published_at', cutoff);
+
+  if (error) {
+    console.error('[Cleanup vacancies by age] Ошибка:', error.message);
+    return 0;
+  }
+  if (deleted) console.log(`[Cleanup vacancies by age] Удалено старше ${MAX_AGE_DAYS} дней: ${deleted}`);
+  return deleted || 0;
+}
 
 async function cleanupIfNeeded() {
   const db = supabaseAdmin();
@@ -58,13 +78,14 @@ export async function GET(request) {
   isRunning = true;
   runningSince = Date.now();
   try {
-    const deleted = await cleanupIfNeeded();
+    const deletedByAge = await cleanupByAge();
+    const deletedByCount = await cleanupIfNeeded();
     const added = await runAllVacancyParsers();
 
     return NextResponse.json({
       success: true,
       added,
-      deleted,
+      deleted: deletedByAge + deletedByCount,
       timestamp: new Date().toISOString(),
     });
   } catch (err) {

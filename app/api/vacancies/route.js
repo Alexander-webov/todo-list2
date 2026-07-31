@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
-import { RU_VACANCY_SOURCES, WORLD_VACANCY_SOURCES } from '@/lib/parsers/vacancies/index';
+import { RU_VACANCY_SOURCES, WORLD_VACANCY_SOURCES } from '@/lib/vacancySources';
 import { createTTLCache } from '@/lib/simpleCache';
 
 export const runtime = 'nodejs';
