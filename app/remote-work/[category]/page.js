@@ -57,7 +57,7 @@ export default async function RemoteWorkCategoryPage({ params }) {
           <p className={styles.desc}>{cat.description}</p>
           <div className={catStyles.stats}>
             <span>📋 {count || 0} вакансий</span>
-            <span>🇷🇺 HH.ru, Avito · 🌍 RemoteOK, WeWorkRemotely, Remotive</span>
+            <span>🇷🇺 HH.ru, Avito, Работа России · 🌍 RemoteOK, WeWorkRemotely, Remotive</span>
           </div>
         </div>
 

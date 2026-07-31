@@ -26,19 +26,15 @@ export function VacancyCard({ vacancy, style }) {
   const emoji = VACANCY_CATEGORY_EMOJI[vacancy.category] || '📌';
 
   return (
-    <a
-      href={vacancy.url}
-      target="_blank"
-      rel="noopener noreferrer sponsored"
-      className={styles.card}
-      style={style}
-    >
+    <div className={styles.card} style={style}>
       <div className={styles.rowTop}>
         <span className={styles.sourceBadge}>{meta.flag} {meta.name}</span>
         <span className={styles.time}>{timeAgo(vacancy.published_at)}</span>
       </div>
 
-      <h3 className={styles.title}>{vacancy.title}</h3>
+      <a href={`/remote-work/vacancy/${vacancy.id}`} className={styles.titleLink}>
+        <h3 className={styles.title}>{vacancy.title}</h3>
+      </a>
 
       {vacancy.company && <div className={styles.company}>{vacancy.company}</div>}
 
@@ -50,6 +46,15 @@ export function VacancyCard({ vacancy, style }) {
         <span className={styles.categoryBadge}>{emoji} {vacancy.category}</span>
         {salary && <span className={styles.salary}>{salary}</span>}
       </div>
-    </a>
+
+      <a
+        href={vacancy.url}
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        className={styles.applyLink}
+      >
+        Откликнуться →
+      </a>
+    </div>
   );
 }

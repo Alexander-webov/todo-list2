@@ -1,0 +1,149 @@
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 24px 64px;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.back {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.back:hover { color: var(--text); }
+
+.title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  margin: 0 0 4px;
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.filterBtn {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-bright);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filterBtn:hover { border-color: var(--accent); }
+.filterBtnActive {
+  background: rgba(86, 128, 207, 0.14);
+  border-color: var(--accent);
+  color: var(--accent-hover);
+}
+
+.empty {
+  padding: 40px 0;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  border: 1px solid var(--border-bright);
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  line-height: 1.4;
+}
+a.cardTitle:hover { color: var(--accent); }
+
+.cardDate {
+  font-size: 12px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.metaTag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--border);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.cardBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.statusBadge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: var(--status-color);
+  background: color-mix(in srgb, var(--status-color) 14%, transparent);
+}
+
+.statusSelect {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--bg-card);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  padding: 5px 8px;
+  cursor: pointer;
+}
+
+.archivedNote {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-style: italic;
+}

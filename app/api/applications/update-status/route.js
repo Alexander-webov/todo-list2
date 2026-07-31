@@ -53,7 +53,7 @@ export async function PATCH(request) {
     // Подтягиваем мета проекта для снапшота
     const { data: project } = await db
       .from('projects')
-      .select('source, budget_min')
+      .select('source, budget_min, title, referral_url, url')
       .eq('id', project_id)
       .single();
 
@@ -62,6 +62,8 @@ export async function PATCH(request) {
       project_id,
       source: project?.source || null,
       project_budget: project?.budget_min || null,
+      title: project?.title || null,
+      url: project?.referral_url || project?.url || null,
       ...patch,
     });
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });

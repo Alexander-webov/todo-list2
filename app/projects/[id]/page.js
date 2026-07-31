@@ -9,9 +9,8 @@ import { ru } from 'date-fns/locale';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://allfreelancershere.ru';
 
 const SOURCE_NAMES = {
-  freelancer: 'Freelancer.com', fl: 'FL.ru',
-  upwork: 'Upwork', peopleperhour: 'PeoplePerHour',
-  guru: 'Guru.com',
+  fl: 'FL.ru', kwork: 'Kwork', freelanceru: 'Freelance.ru', youdo: 'Youdo',
+  freelancer: 'Freelancer.com', peopleperhour: 'PeoplePerHour', guru: 'Guru.com',
 };
 
 const CATEGORY_RU = {

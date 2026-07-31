@@ -23,10 +23,13 @@ export async function POST(request) {
 
   const db = supabaseAdmin();
 
-  // Подтягиваем данные проекта для снапшота
+  // Подтягиваем данные проекта для снапшота — url и title сохраняем
+  // отдельно, потому что через 30 дней сам проект может быть вычищен
+  // из БД (см. cleanupByAge в /api/cron/parse), а история откликов
+  // должна остаться читаемой.
   const { data: project } = await db
     .from('projects')
-    .select('source, budget_min, category')
+    .select('source, budget_min, category, title, referral_url, url')
     .eq('id', projectId)
     .single();
 
@@ -51,6 +54,8 @@ export async function POST(request) {
     project_budget: budget || null,
     project_score: score,
     used_ai: !!body.used_ai,
+    title: project.title || null,
+    url: project.referral_url || project.url || null,
   });
 
   // Дубль (unique constraint) — это норм, пользователь просто кликнул второй раз

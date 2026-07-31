@@ -40,6 +40,15 @@ export function DashboardClient({ profile, email, payments, paymentStatus }) {
         </div>
       </div>
 
+      <div className={styles.section}>
+        <Link href="/dashboard/applications" className={styles.card} style={{ display: 'block', textDecoration: 'none' }}>
+          <div className={styles.row}>
+            <span className={styles.rowLabel}>📋 Мои отклики</span>
+            <span className={styles.rowValue}>Посмотреть →</span>
+          </div>
+        </Link>
+      </div>
+
       {
         payments.length > 0 && (
           <div className={styles.section}>

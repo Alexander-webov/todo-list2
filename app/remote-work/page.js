@@ -21,7 +21,7 @@ export default async function RemoteWorkPage() {
         <div className={styles.hero}>
           <h1 className={styles.title}>Удалённая работа</h1>
           <p className={styles.desc}>
-            Собираем вакансии на удалёнке с HH.ru и Avito по России, а также с RemoteOK, WeWorkRemotely и Remotive
+            Собираем вакансии на удалёнке с HH.ru, Avito и портала «Работа России» по России, а также с RemoteOK, WeWorkRemotely и Remotive
             по всему миру — в одной ленте, с разбивкой по категориям.
           </p>
         </div>
