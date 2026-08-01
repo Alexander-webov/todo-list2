@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { runAllVacancyParsers } from '@/lib/parsers/vacancies/index';
+import { runRuVacancyParsers } from '@/lib/parsers/vacancies/index';
 import { supabaseAdmin } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
@@ -80,7 +80,7 @@ export async function GET(request) {
   try {
     const deletedByAge = await cleanupByAge();
     const deletedByCount = await cleanupIfNeeded();
-    const added = await runAllVacancyParsers();
+    const added = await runRuVacancyParsers();
 
     return NextResponse.json({
       success: true,
