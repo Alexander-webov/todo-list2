@@ -3,6 +3,7 @@ import Script from 'next/script';
 import { Manrope } from 'next/font/google';
 import { ExitIntentProvider } from '@/components/ExitIntentProvider';
 import { PromoModal } from '@/components/PromoModal';
+import { RecoveryTokenGuard } from '@/components/RecoveryTokenGuard';
 
 const sans = Manrope({
   subsets: ['latin', 'cyrillic'],
@@ -140,6 +141,7 @@ export default function RootLayout({ children }) {
           </noscript>
         )}
         {children}
+        <RecoveryTokenGuard />
         <PromoModal />
         <ExitIntentProvider />
       </body>

@@ -37,7 +37,20 @@ export function DashboardClient({ profile, email, payments, paymentStatus }) {
               ✅ Полный доступ (бесплатно)
             </span>
           </div>
+          <div className={styles.row}>
+            <span className={styles.rowLabel}>💰 Баланс сайта</span>
+            <span className={styles.rowValue}>{Number(profile?.wallet_balance || 0).toLocaleString('ru')} ₽</span>
+          </div>
         </div>
+      </div>
+
+      <div className={styles.section}>
+        <Link href="/courses" className={styles.card} style={{ display: 'block', textDecoration: 'none' }}>
+          <div className={styles.row}>
+            <span className={styles.rowLabel}>🎓 Курсы</span>
+            <span className={styles.rowValue}>Пройти и получить баланс →</span>
+          </div>
+        </Link>
       </div>
 
       <div className={styles.section}>

@@ -40,14 +40,28 @@ export async function generateStaticParams() {
   return [];
 }
 
+function renderInline(text) {
+  // Раньше **жирный** внутри строки (не всю строку целиком) не парсился —
+  // рендерился как есть, с сырыми звёздочками. Несколько уже опубликованных
+  // статей используют именно такой паттерн ("**Метка:** текст дальше"),
+  // так что это была реальная, просто незамеченная проблема на сайте.
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+}
+
 function renderContent(content) {
   return content.trim().split('\n').map((line, i) => {
-    if (line.startsWith('## ')) return <h2 key={i} className={styles.h2}>{line.slice(3)}</h2>;
+    if (line.startsWith('## ')) return <h2 key={i} className={styles.h2}>{renderInline(line.slice(3))}</h2>;
     if (line.startsWith('**') && line.endsWith('**')) return <p key={i} className={styles.bold}>{line.slice(2, -2)}</p>;
-    if (line.startsWith('- ')) return <li key={i} className={styles.li}>{line.slice(2)}</li>;
+    if (line.startsWith('- ')) return <li key={i} className={styles.li}>{renderInline(line.slice(2))}</li>;
     if (line.startsWith('*') && line.endsWith('*')) return <p key={i} className={styles.italic}>{line.slice(1, -1)}</p>;
     if (line.trim() === '') return null;
-    return <p key={i} className={styles.p}>{line}</p>;
+    return <p key={i} className={styles.p}>{renderInline(line)}</p>;
   });
 }
 

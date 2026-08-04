@@ -61,6 +61,24 @@ export async function POST(request) {
     } else {
       // Активируем премиум на 30 дней
       await activatePremium(userId, 30);
+
+      // Если часть суммы была покрыта балансом сайта — списываем здесь,
+      // только после подтверждённого успеха оплаты, не раньше.
+      const walletUsed = parseFloat(payment.metadata?.wallet_used) || 0;
+      if (walletUsed > 0) {
+        const { data: profile } = await db.from('profiles').select('wallet_balance').eq('id', userId).single();
+        await db
+          .from('profiles')
+          .update({ wallet_balance: Math.max((profile?.wallet_balance || 0) - walletUsed, 0) })
+          .eq('id', userId);
+        await db.from('wallet_transactions').insert({
+          user_id: userId,
+          amount: -walletUsed,
+          type: 'spent_premium',
+          description: 'Частичная оплата премиума балансом',
+        });
+      }
+
       console.log(`[YooKassa] Премиум активирован для ${userId}`);
     }
 

@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
         <h1 className={styles.title}>Письмо отправлено</h1>
         <p className={styles.subtitle}>
           Проверь почту <strong>{email}</strong> и перейди по ссылке.<br />
-          <small style={{ color: 'var(--text-dim)' }}>Используй только последнее письмо — ссылка одноразовая.</small>
+          <small style={{ color: 'var(--text-dim)' }}>Используй только последнее письмо — ссылка одноразовая. Не пришло за пару минут? Загляни в папку «Спам».</small>
         </p>
         <Link href="/login" className={styles.btn} style={{ display: 'block', textAlign: 'center', marginTop: 16 }}>
           Вернуться ко входу

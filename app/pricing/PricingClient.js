@@ -10,6 +10,8 @@ const INT = getPrice('int');
 export function PricingClient() {
   const [isLoggedIn, setIsLoggedIn] = useState(null); // null = ещё не загружено
   const [isPremium, setIsPremium] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [useWallet, setUseWallet] = useState(true);
   const [yookassaLoading, setYookassaLoading] = useState(false);
   const [stripeLoading, setStripeLoading] = useState(false);
   const [error, setError] = useState('');
@@ -25,6 +27,7 @@ export function PricingClient() {
             !data.premium_until || new Date(data.premium_until) > new Date()
           );
           setIsPremium(active);
+          setWalletBalance(data.wallet_balance || 0);
         } else {
           setIsLoggedIn(false);
         }
@@ -40,8 +43,19 @@ export function PricingClient() {
     setYookassaLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/payment/yookassa/create', { method: 'POST' });
+      const res = await fetch('/api/payment/yookassa/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ use_wallet: useWallet && walletBalance > 0 }),
+      });
       const data = await res.json();
+
+      if (data.activated_free) {
+        // Баланса хватило на всю сумму — премиум уже активирован без похода в YooKassa
+        window.location.href = '/pricing?payment=success';
+        return;
+      }
+
       // API может возвращать ключ 'url' или 'confirmation_url' — поддержим оба
       const redirectUrl = data.confirmation_url || data.url;
       if (redirectUrl) {
@@ -143,6 +157,12 @@ export function PricingClient() {
               <span className={styles.saleBadge}>−{RU.discountPercent}%</span>
             )}
           </div>
+          {isLoggedIn && walletBalance > 0 && (
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)', marginBottom: 12, cursor: 'pointer' }}>
+              <input type="checkbox" checked={useWallet} onChange={e => setUseWallet(e.target.checked)} />
+              Списать баланс сайта ({walletBalance.toLocaleString('ru')} ₽) — итого {Math.max(RU.final - (useWallet ? walletBalance : 0), 0)} ₽
+            </label>
+          )}
           <button
             onClick={payYookassa}
             className={styles.payBtn}

@@ -16,5 +16,6 @@ export async function GET() {
     premium_until: profile?.premium_until || null,
     user_role: profile?.user_role || null,
     is_admin: profile?.is_admin || false,
+    wallet_balance: profile?.wallet_balance || 0,
   });
 }

@@ -2,19 +2,43 @@ import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
-import { yookassaAmountString } from '@/lib/pricing';
+import { getPrice, yookassaAmountString } from '@/lib/pricing';
+import { activatePremium } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
 const SHOP_ID = process.env.YOOKASSA_SHOP_ID;
 const SECRET_KEY = process.env.YOOKASSA_SECRET_KEY;
-const AMOUNT = yookassaAmountString(); // цена со скидкой из lib/pricing.js
 const CURRENCY = 'RUB';
 
-export async function POST() {
-  const { user } = await getCurrentUser();
+export async function POST(request) {
+  const { user, profile } = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: 'Необходима авторизация' }, { status: 401 });
+  }
+
+  let body;
+  try { body = await request.json(); } catch { body = {}; }
+  const wantsWallet = !!body.use_wallet;
+
+  const basePrice = parseFloat(yookassaAmountString()); // цена со скидкой из lib/pricing.js
+  const walletBalance = Number(profile?.wallet_balance || 0);
+  const walletUsed = wantsWallet ? Math.min(walletBalance, basePrice) : 0;
+  const finalPrice = Math.max(basePrice - walletUsed, 0);
+
+  const db = supabaseAdmin();
+
+  // Баланса хватило на всю сумму — активируем сразу, без похода в YooKassa
+  if (walletUsed > 0 && finalPrice === 0) {
+    await db.from('profiles').update({ wallet_balance: walletBalance - walletUsed }).eq('id', user.id);
+    await db.from('wallet_transactions').insert({
+      user_id: user.id,
+      amount: -walletUsed,
+      type: 'spent_premium',
+      description: 'Премиум-подписка полностью оплачена балансом',
+    });
+    await activatePremium(user.id, 30);
+    return NextResponse.json({ activated_free: true });
   }
 
   // Проверяем что ключи подключены — иначе ловим непонятную 401 от ЮКассы
@@ -26,6 +50,7 @@ export async function POST() {
   }
 
   const idempotenceKey = uuidv4();
+  const AMOUNT = finalPrice.toFixed(2);
 
   try {
     const credentials = Buffer.from(`${SHOP_ID}:${SECRET_KEY}`).toString('base64');
@@ -46,7 +71,9 @@ export async function POST() {
         },
         capture: true,
         description: 'allFreelancersHere — Премиум подписка 30 дней',
-        metadata: { user_id: user.id },
+        // wallet_used передаём через metadata — вебхук спишет баланс
+        // только после реального успеха оплаты, не раньше.
+        metadata: { user_id: user.id, wallet_used: walletUsed || undefined },
       }),
     });
 
@@ -54,7 +81,6 @@ export async function POST() {
 
     if (!payment.id) {
       console.error('[YooKassa] Ошибка от API:', JSON.stringify(payment));
-      // Возвращаем понятную ошибку юзеру
       const userMessage = payment.description || payment.error_description
         || 'Ошибка при создании платежа. Попробуйте позже.';
       return NextResponse.json({ error: userMessage }, { status: 500 });
@@ -70,7 +96,6 @@ export async function POST() {
 
     // Сохраняем платёж в БД (best effort, не критично если упадёт)
     try {
-      const db = supabaseAdmin();
       await db.from('payments').insert({
         user_id: user.id,
         provider: 'yookassa',
@@ -84,7 +109,6 @@ export async function POST() {
       console.error('[YooKassa] Не удалось сохранить в БД:', dbErr.message);
     }
 
-    // Возвращаем оба ключа — на фронте по-разному могут читать
     return NextResponse.json({
       confirmation_url: confirmationUrl,
       url: confirmationUrl,

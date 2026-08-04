@@ -42,7 +42,7 @@ export default function RegisterPage() {
 
     const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
     if (loginError) {
-      setError('Подтверди email — заказы уже ждут тебя.');
+      setError('Подтверди email — заказы уже ждут тебя. Письмо не пришло за пару минут? Загляни в папку «Спам» — иногда попадает туда.');
       setLoading(false);
       return;
     }
