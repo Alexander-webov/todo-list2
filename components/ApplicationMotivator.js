@@ -109,13 +109,28 @@ function Metric({ label, value, hint }) {
   );
 }
 
-// Утилита для ProjectCard — dispatchit событие + фактически трекает отклик
+// Утилита для ProjectCard/GoToProjectButton — dispatchit событие + трекает отклик.
+// Раньше это был обычный fetch без await в месте вызова (GoToProjectButton
+// сразу после этого делает router.push) — на мобильных браузерах, особенно
+// Safari, такой fetch реально может быть оборван самой навигацией раньше,
+// чем сервер успеет его обработать. sendBeacon для этого и придуман —
+// гарантированно переживает уход со страницы.
 export async function trackApplication(projectId, usedAi = false) {
+  const payload = JSON.stringify({ project_id: projectId, used_ai: usedAi });
   try {
+    if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+      const blob = new Blob([payload], { type: 'application/json' });
+      const queued = navigator.sendBeacon('/api/applications/track', blob);
+      if (queued) {
+        window.dispatchEvent(new CustomEvent(APP_EVENT));
+        return;
+      }
+    }
+    // Фоллбэк — если sendBeacon недоступен или очередь браузера переполнена
     await fetch('/api/applications/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ project_id: projectId, used_ai: usedAi }),
+      body: payload,
     });
     window.dispatchEvent(new CustomEvent(APP_EVENT));
   } catch {}

@@ -198,7 +198,7 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
       </div>
 
       {/* Вкладки */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
         {[['stats','📊 Статистика'],['articles','📝 Статьи'],['ads','📣 Реклама'],['premium','🎁 Премиум']].map(([key, label]) => (
           <button key={key} onClick={() => setTab(key)} style={{
             padding: '8px 16px', borderRadius: 8, border: '1px solid var(--border)',
@@ -207,6 +207,11 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
             cursor: 'pointer', fontSize: 13, fontWeight: 600,
           }}>{label}</button>
         ))}
+        <a href="/admin/courses-review" style={{
+          padding: '8px 16px', borderRadius: 8, border: '1px solid var(--border)',
+          background: 'var(--bg-card)', color: 'var(--text-muted)',
+          fontSize: 13, fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center',
+        }}>🎓 Курсы</a>
       </div>
 
       {/* Статистика */}
