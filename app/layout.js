@@ -55,6 +55,17 @@ export const metadata = {
   verification: {
     yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
     google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
+    other: {
+      // AdSense в некоторых случаях не может проверить сайт по <script>
+      // из next/script (strategy="afterInteractive") — он добавляется в
+      // <head> уже на клиенте после гидратации, а бот проверки Google
+      // может смотреть именно сырой HTML-ответ с сервера, где скрипта ещё
+      // нет. meta-тег через Next.js metadata рендерится сразу на сервере —
+      // надёжнее для этого конкретного способа подтверждения.
+      ...(process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID
+        ? { 'google-adsense-account': process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID }
+        : {}),
+    },
   },
 };
 
