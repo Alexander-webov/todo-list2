@@ -41,6 +41,8 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
   // Переключатель рекламы Яндекса
   const [yandexAdsEnabled, setYandexAdsEnabled] = useState(true);
   const [yandexSaving, setYandexSaving] = useState(false);
+  const [googleAdsEnabled, setGoogleAdsEnabled] = useState(true);
+  const [googleSaving, setGoogleSaving] = useState(false);
 
   useEffect(() => {
     if (tab === 'articles') loadArticles();
@@ -62,6 +64,7 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
       const res = await fetch('/api/admin/settings');
       const data = await res.json();
       if (typeof data.yandex_ads_enabled === 'boolean') setYandexAdsEnabled(data.yandex_ads_enabled);
+      if (typeof data.google_ads_enabled === 'boolean') setGoogleAdsEnabled(data.google_ads_enabled);
     } catch { }
   }
 
@@ -77,6 +80,20 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
       if (data.success) setYandexAdsEnabled(data.yandex_ads_enabled);
     } catch { }
     finally { setYandexSaving(false); }
+  }
+
+  async function toggleGoogle() {
+    setGoogleSaving(true);
+    try {
+      const next = !googleAdsEnabled;
+      const res = await fetch('/api/admin/settings', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ google_ads_enabled: next }),
+      });
+      const data = await res.json();
+      if (data.success) setGoogleAdsEnabled(data.google_ads_enabled);
+    } catch { }
+    finally { setGoogleSaving(false); }
   }
 
   async function saveAd(e) {
@@ -381,6 +398,16 @@ export function AdminClient({ gifts, totalUsers, premiumUsers }) {
                 </button>
                 <span style={{ fontSize: 13, color: 'var(--muted)' }}>
                   {yandexAdsEnabled ? 'Показывается на сайте' : 'Скрыта на всём сайте'} · применится в течение минуты
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, padding: '12px 16px', background: 'var(--card)', borderRadius: 8, flexWrap: 'wrap' }}>
+                <span style={{ fontWeight: 600 }}>📢 Реклама Google (AdSense)</span>
+                <button onClick={toggleGoogle} disabled={googleSaving}
+                  style={{ padding: '6px 18px', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, color: '#fff', background: googleAdsEnabled ? '#1f9d55' : '#888' }}>
+                  {googleSaving ? '...' : (googleAdsEnabled ? 'Включена' : 'Выключена')}
+                </button>
+                <span style={{ fontSize: 13, color: 'var(--muted)' }}>
+                  {googleAdsEnabled ? 'Показывается всем, включая премиум' : 'Скрыта на всём сайте'} · применится в течение минуты
                 </span>
               </div>
               <button onClick={() => { setEditingAd({}); setAdForm({ title: '', description: '', image_url: '', link: '', position: 'feed', is_active: true, priority: 0, tg_pin_hours: 2, tg_keep_hours: 48 }); }}

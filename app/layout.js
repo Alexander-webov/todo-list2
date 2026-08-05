@@ -130,6 +130,14 @@ export default function RootLayout({ children }) {
             async
           />
         )}
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
+          <Script
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+            async
+          />
+        )}
       </head>
       <body className={sans.variable}>
         {YANDEX_METRIKA_ID && (

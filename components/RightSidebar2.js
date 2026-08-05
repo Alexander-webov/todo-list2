@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import styles from './RightSidebar.module.css';
 import adStyles from './AdSlot.module.css';
-import { YandexAdSlot } from './AdSlot';
+import { GoogleAdSlot } from './AdSlot';
 import { ArticleOfDay } from './ArticleOfDay';
 import { DonationBanner } from './DonationBanner';
 import { FeaturePromoCard } from './FeaturePromoCard';
@@ -81,7 +81,7 @@ export function RightSidebar() {
       ) : (
         <div className={styles.adPlaceholder}>
           <span className={styles.adBadge}>Реклама</span>
-          <YandexAdSlot blockId="R-A-19120508-2" />
+          <GoogleAdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} />
         </div>
       )}
 

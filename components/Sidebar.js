@@ -5,7 +5,7 @@ import styles from './Sidebar.module.css';
 
 
 import adStyles from './AdSlot.module.css';
-import { YandexAdSlot } from './AdSlot';
+import { GoogleAdSlot } from './AdSlot';
 import { ArticleOfDay } from './ArticleOfDay';
 import { DonationBanner } from './DonationBanner';
 
@@ -313,7 +313,7 @@ export function Sidebar() {
       ) : (
         <div className={styles.adPlaceholder}>
           <span className={styles.adBadge}>Реклама</span>
-          <YandexAdSlot blockId="R-A-19120508-2" />
+          <GoogleAdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} />
         </div>
       )}
 
